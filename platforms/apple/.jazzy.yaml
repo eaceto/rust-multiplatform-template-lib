@@ -1,0 +1,38 @@
+# Jazzy Configuration for Swift Documentation
+# https://github.com/realm/jazzy
+
+module: Template
+author: rust-multiplatform-template-lib
+author_url: https://github.com/eaceto/rust-multiplatform-template-lib
+github_url: https://github.com/eaceto/rust-multiplatform-template-lib
+root_url: https://eaceto.github.io/rust-multiplatform-template-lib/swift/
+
+theme: fullwidth
+clean: true
+min_acl: public
+
+output: ../../docs/swift
+
+# Swift source files (don't use xcodebuild for XCFramework packages)
+sourcekitten_sourcefile:
+  - Sources/Template/rust_multiplatform_template_lib.swift
+
+# Documentation structure
+custom_categories:
+  - name: Functions
+    children:
+      - hello_world()
+      - echo(input:)
+      - random()
+  - name: Errors
+    children:
+      - UniffiTemplateError
+
+# README content
+readme: README.md
+
+# Exclude patterns
+exclude:
+  - "*/.*"
+  - "*/build/*"
+  - "*/Pods/*"

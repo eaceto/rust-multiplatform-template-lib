@@ -1,0 +1,108 @@
+# ============================
+# Global ignores
+# ============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.log
+*.bak
+*.orig
+
+# Editor / IDE
+.idea/
+.vscode/
+*.iml
+
+# ============================
+# Rust (root crate)
+# ============================
+/target/
+Cargo.lock
+**/*.rs.bk
+
+# ============================
+# Kotlin Multiplatform (platforms/kotlin)
+# ============================
+/platforms/kotlin/.gradle/
+/platforms/kotlin/build/
+/platforms/kotlin/.idea/
+/platforms/kotlin/local.properties
+/platforms/kotlin/.kotlin/
+/platforms/kotlin/.mvn/
+/platforms/kotlin/out/
+/platforms/kotlin/captures/
+/platforms/kotlin/*.iml
+/platforms/kotlin/gradle-app.setting
+/platforms/kotlin/gradle-app.properties
+/platforms/kotlin/gradlew
+/platforms/kotlin/gradlew.bat
+/platforms/kotlin/gradle/
+
+# KMM artifacts
+/platforms/kotlin/.konan/
+/platforms/kotlin/.kotlin_js_test/
+
+# Android-specific
+/platforms/kotlin/.cxx/
+/platforms/kotlin/.externalNativeBuild/
+
+# Generated bindings and native libraries
+/platforms/kotlin/src/commonMain/kotlin/uniffi/
+/platforms/kotlin/src/jniLibs/
+/platforms/kotlin/src/jvmMain/kotlin/*.so
+/platforms/kotlin/src/jvmMain/kotlin/*.dylib
+/platforms/kotlin/src/jvmMain/kotlin/*.dll
+
+# ============================
+# Apple (platforms/apple)
+# ============================
+/platforms/apple/DerivedData/
+/platforms/apple/build/
+/platforms/apple/xcuserdata/
+/platforms/apple/*.xcworkspace/xcuserdata/
+/platforms/apple/*.xcuserstate
+/platforms/apple/*.xcuserdatad
+/platforms/apple/*.xccheckout
+/platforms/apple/*.moved-aside
+/platforms/apple/*.pbxuser
+/platforms/apple/*.mode1v3
+/platforms/apple/*.mode2v3
+/platforms/apple/Pods/
+/platforms/apple/Carthage/
+/platforms/apple/fastlane/report.xml
+/platforms/apple/fastlane/test_output/
+
+# SwiftPM
+/platforms/apple/.build/
+/platforms/apple/.swiftpm/
+/platforms/apple/Package.resolved
+
+# Generated bindings and frameworks
+/platforms/apple/Sources/Template/*.swift
+/platforms/apple/Sources/Template/*.h
+/platforms/apple/Sources/Template/*.modulemap
+/platforms/apple/xcframework/*.xcframework
+/platforms/apple/xcframework/*.a
+
+# ============================
+# Build artifacts
+# ============================
+*.dylib
+*.so
+*.dll
+*.a
+
+# ============================
+# Misc
+# ============================
+/coverage/
+/tmp/
+/out/
+.claude
+
+# ============================
+# Documentation (keep docs/ for GitHub Pages)
+# ============================
+# docs/ is intentionally NOT ignored - it's published to GitHub Pages

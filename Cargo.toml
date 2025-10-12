@@ -1,0 +1,33 @@
+[package]
+name = "rust-multiplatform-template-lib"
+version = "0.1.0"
+edition = "2021"
+authors = ["Ezequiel (Kimi) Aceto <eaceto@pm.me>"]
+license = "MIT"
+description = "A template for creating Rust libraries with iOS, macOS, Android, and JVM bindings"
+repository = "https://github.com/eaceto/rust-multiplatform-template-lib"
+homepage = "https://eaceto.dev"
+documentation = "https://eaceto.github.io/rust-multiplatform-template-lib/lib/"
+readme = "README.md"
+keywords = ["ffi", "uniffi", "multiplatform", "ios", "android", "template"]
+categories = ["api-bindings", "development-tools::ffi"]
+
+[lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi-bindgen.rs"
+
+[dependencies]
+# Random number generation
+rand = "0.9"
+
+# Error handling
+thiserror = "2.0"
+
+# UniFFI for Swift/Kotlin bindings
+uniffi = { version = "0.30", features = ["cli"] }
+
+[build-dependencies]
+uniffi = { version = "0.30", features = ["build"] }

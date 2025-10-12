@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MAX_INPUT_SIZE"],"enum":["TemplateError"],"fn":["echo","hello_world","random"],"type":["TemplateResult"]};

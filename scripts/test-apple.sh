@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🧪 Testing Apple Platforms..."
+echo "[TEST] Testing Apple Platforms..."
 echo ""
 
 # Navigate to project root
@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 
 # First, ensure the library is built
 if [ ! -d "platforms/apple/xcframework/librust_multiplatform_template_lib.xcframework" ]; then
-    echo "⚠️  XCFramework not found. Building first..."
+    echo "[WARNING]  XCFramework not found. Building first..."
     ./build-apple.sh
     echo ""
 fi
@@ -25,11 +25,11 @@ cd platforms/apple
 # Run swift tests
 if swift test; then
     echo ""
-    echo "✅ Swift tests passed!"
+    echo "[SUCCESS] Swift tests passed!"
     TEST_RESULT=0
 else
     echo ""
-    echo "❌ Swift tests failed!"
+    echo "[FAILED] Swift tests failed!"
     TEST_RESULT=1
 fi
 
@@ -42,9 +42,9 @@ echo "════════════════════════�
 echo ""
 
 if [ $TEST_RESULT -eq 0 ]; then
-    echo "✅ All Apple platform tests passed!"
+    echo "[SUCCESS] All Apple platform tests passed!"
     exit 0
 else
-    echo "❌ Some tests failed. Check the output above."
+    echo "[FAILED] Some tests failed. Check the output above."
     exit 1
 fi

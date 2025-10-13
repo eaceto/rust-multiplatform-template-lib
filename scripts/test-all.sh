@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🧪 Running All Tests..."
+echo "[TEST] Running All Tests..."
 echo ""
 
 # Navigate to project root
@@ -18,10 +18,10 @@ echo ""
 
 if cargo test; then
     echo ""
-    echo "✅ Rust tests passed!"
+    echo "[SUCCESS] Rust tests passed!"
 else
     echo ""
-    echo "❌ Rust tests failed!"
+    echo "[FAILED] Rust tests failed!"
     FAILED_TESTS+=("Rust")
 fi
 
@@ -36,10 +36,10 @@ echo ""
 
 if ./scripts/test-apple.sh; then
     echo ""
-    echo "✅ Apple platform tests passed!"
+    echo "[SUCCESS] Apple platform tests passed!"
 else
     echo ""
-    echo "❌ Apple platform tests failed!"
+    echo "[FAILED] Apple platform tests failed!"
     FAILED_TESTS+=("Apple")
 fi
 
@@ -54,10 +54,10 @@ echo ""
 
 if ./scripts/test-kotlin.sh; then
     echo ""
-    echo "✅ Kotlin platform tests passed!"
+    echo "[SUCCESS] Kotlin platform tests passed!"
 else
     echo ""
-    echo "❌ Kotlin platform tests failed!"
+    echo "[FAILED] Kotlin platform tests failed!"
     FAILED_TESTS+=("Kotlin")
 fi
 
@@ -66,22 +66,22 @@ echo ""
 
 # Summary
 echo "════════════════════════════════════════════════════════════"
-echo "📊 Test Summary"
+echo " Test Summary"
 echo "════════════════════════════════════════════════════════════"
 echo ""
 
 if [ ${#FAILED_TESTS[@]} -eq 0 ]; then
-    echo "✅ All tests passed!"
+    echo "[SUCCESS] All tests passed!"
     echo ""
     echo "Test Coverage:"
-    echo "   ✅ Rust core library (unit + integration + doc tests)"
-    echo "   ✅ Apple platforms (iOS + macOS Swift tests)"
-    echo "   ✅ Kotlin platforms (Android + JVM tests)"
+    echo "   [SUCCESS] Rust core library (unit + integration + doc tests)"
+    echo "   [SUCCESS] Apple platforms (iOS + macOS Swift tests)"
+    echo "   [SUCCESS] Kotlin platforms (Android + JVM tests)"
     exit 0
 else
-    echo "⚠️  Some test suites failed:"
+    echo "[WARNING]  Some test suites failed:"
     for platform in "${FAILED_TESTS[@]}"; do
-        echo "   ❌ $platform"
+        echo "   [FAILED] $platform"
     done
     echo ""
     echo "Please check the error messages above for details."

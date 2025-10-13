@@ -12,6 +12,8 @@ This guide is for developers who want to build, test, and contribute to this lib
 - [Documentation](#documentation)
 - [Customization](#customization)
 - [Troubleshooting](#troubleshooting)
+- [Best Practices](#best-practices)
+- [Version Compatibility Matrix](#version-compatibility-matrix)
 
 ---
 
@@ -465,6 +467,309 @@ cargo clippy
 # Ensure builds succeed
 ./scripts/build-all.sh
 ```
+
+---
+
+## Best Practices
+
+### FFI Performance Considerations
+
+**Minimize FFI Boundary Crossings**
+- Each call across the FFI boundary has overhead (~100-1000ns)
+- Batch operations when possible instead of making multiple small calls
+- Consider returning collections rather than iterating from Swift/Kotlin
+
+```rust
+// Bad: Multiple FFI calls
+for i in 0..1000 {
+    process_item(i)  // 1000 FFI calls
+}
+
+// Good: Single FFI call
+process_items_batch(vec![0..1000])  // 1 FFI call
+```
+
+**String Handling**
+- String conversion (UTF-8 ↔ UTF-16) has cost
+- Prefer passing IDs/indices instead of strings when possible
+- Cache string lookups on the native side
+
+**Memory Management**
+- UniFFI handles memory automatically, but be aware:
+  - Large data structures are copied across FFI
+  - Use references/handles for large objects when possible
+  - Swift: Objects are reference-counted (ARC)
+  - Kotlin: Objects are garbage-collected
+
+### Platform-Specific Gotchas
+
+#### iOS/macOS
+
+**Thread Safety**
+- Rust functions may be called from any thread
+- Use `Arc<Mutex<T>>` or `Arc<RwLock<T>>` for shared mutable state
+- UniFFI exports are thread-safe by default
+
+**Memory Warnings**
+- Large allocations in Rust aren't visible to iOS memory management
+- Monitor memory usage in your app
+- Consider implementing cleanup methods for large data structures
+
+**Background Execution**
+- Long-running operations should be async
+- iOS may terminate background tasks
+- Use `Task` in Swift for async Rust calls
+
+#### Android
+
+**ProGuard/R8 Rules**
+- If using ProGuard, add rules to keep JNI methods:
+```proguard
+-keep class uniffi.** { *; }
+-keep class template.** { *; }
+```
+
+**NDK Version**
+- Use NDK r21 or later for best compatibility
+- Set minimum API level appropriately (21+ recommended)
+
+**APK Size**
+- Including all architectures increases APK size
+- Use Android App Bundles for automatic per-device optimization
+- Or create separate APKs per architecture
+
+**JNI Threading**
+- Rust functions called from Kotlin may run on any thread
+- Avoid blocking the main thread with long operations
+
+### Error Handling Best Practices
+
+**Use Result Types**
+```rust
+// Preferred: Explicit error handling
+#[uniffi::export]
+pub fn parse_data(input: String) -> Result<Data, MyError> {
+    // ...
+}
+```
+
+**Provide Context in Errors**
+```rust
+#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[uniffi(flat_error)]
+pub enum MyError {
+    #[error("Invalid input: {message} (got: {value})")]
+    InvalidInput { message: String, value: String },
+}
+```
+
+**Handle Panics Gracefully**
+- Panics in Rust become exceptions in Swift/Kotlin
+- Catch panics in critical paths:
+```rust
+use std::panic::catch_unwind;
+
+#[uniffi::export]
+pub fn safe_operation() -> Result<String, MyError> {
+    catch_unwind(|| {
+        risky_operation()
+    }).map_err(|_| MyError::Panic)?
+}
+```
+
+### Testing Best Practices
+
+**Test at All Levels**
+1. **Rust unit tests**: Test core logic
+2. **Rust integration tests**: Test public API
+3. **Platform tests**: Test FFI bindings work correctly
+
+**Mock External Dependencies**
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_with_mock() {
+        // Test using mock instead of real network/file I/O
+    }
+}
+```
+
+**Test Edge Cases**
+- Empty strings/collections
+- Very large inputs
+- Null/None values
+- Concurrent access
+
+### Documentation Best Practices
+
+**Document All Public APIs**
+```rust
+/// Brief one-line description
+///
+/// Detailed explanation with examples and edge cases.
+///
+/// # Arguments
+/// * `param` - Description
+///
+/// # Returns
+/// Description of return value
+///
+/// # Errors
+/// * `MyError::InvalidInput` - When input is invalid
+///
+/// # Example
+/// ```
+/// let result = my_function("test")?;
+/// ```
+```
+
+**Keep Examples Up to Date**
+- Use `cargo test --doc` to verify doc examples compile
+
+**Document Platform-Specific Behavior**
+- Note any differences in iOS vs Android behavior
+- Document thread safety guarantees
+
+---
+
+## Version Compatibility Matrix
+
+### Current Versions (Tested)
+
+| Component | Version | Notes |
+|-----------|---------|-------|
+| **Rust** | 1.83+ | Edition 2021 required |
+| **UniFFI** | 0.30.x | Breaking changes between minor versions |
+| **Xcode** | 15.0+ | For iOS/macOS builds |
+| **iOS Deployment** | 13.0+ | Minimum supported version |
+| **macOS Deployment** | 11.0+ | Apple Silicon + Intel |
+| **Android NDK** | r21+ (21.0+) | r25+ recommended |
+| **Android Min SDK** | 21+ (Android 5.0+) | API Level 21 minimum |
+| **Kotlin** | 1.9+ | For Kotlin Multiplatform |
+| **Gradle** | 8.0+ | For Android/JVM builds |
+| **Java/JVM** | 11+ | For JVM desktop targets |
+
+### Rust Toolchain Compatibility
+
+| Rust Version | UniFFI | Status | Notes |
+|--------------|--------|--------|-------|
+| 1.83-1.85 | 0.30.x | ✅ Tested | Current stable |
+| 1.80-1.82 | 0.30.x | ✅ Compatible | Should work |
+| 1.75-1.79 | 0.30.x | ⚠️ May work | Not tested |
+| < 1.75 | 0.30.x | ❌ Not supported | Edition 2021 issues |
+
+### Platform SDK Compatibility
+
+#### Apple Platforms
+
+| Xcode | Swift | iOS SDK | macOS SDK | Status |
+|-------|-------|---------|-----------|--------|
+| 16.x | 6.0 | 18.x | 15.x | ✅ Tested |
+| 15.x | 5.9 | 17.x | 14.x | ✅ Tested |
+| 14.x | 5.7-5.8 | 16.x | 13.x | ⚠️ Should work |
+| < 14.0 | < 5.7 | < 16.0 | < 13.0 | ❌ Not tested |
+
+**Notes:**
+- XCFramework requires Xcode 11+
+- Swift Package Manager works best with Xcode 14+
+- Apple Silicon requires Xcode 12+
+
+#### Android Platform
+
+| NDK Version | Min SDK | Max SDK | Rust Target | Status |
+|-------------|---------|---------|-------------|--------|
+| r29 (29.x) | 21+ | 35+ | 1.83+ | ✅ Tested |
+| r26-r28 | 21+ | 34+ | 1.75+ | ✅ Compatible |
+| r25 | 21+ | 33+ | 1.70+ | ⚠️ Should work |
+| r21-r24 | 21+ | 30+ | 1.70+ | ⚠️ May work |
+| < r21 | - | - | - | ❌ Not supported |
+
+**NDK Architecture Support:**
+- `arm64-v8a`: 64-bit ARM (recommended, most devices)
+- `armeabi-v7a`: 32-bit ARM (older devices)
+- `x86_64`: 64-bit x86 (emulators)
+- `x86`: 32-bit x86 (older emulators)
+
+### Dependency Version Pinning
+
+**Critical Dependencies:**
+
+```toml
+[dependencies]
+uniffi = "0.30"         # Pin minor version - breaking changes common
+rand = "0.9"            # Compatible with 0.9.x
+thiserror = "2.0"       # Stable, major version updates rare
+
+[build-dependencies]
+uniffi = { version = "0.30", features = ["build"] }
+```
+
+**Version Update Strategy:**
+- **UniFFI**: Test thoroughly before upgrading minor versions
+- **Rust**: Keep within 6 months of latest stable
+- **Platform SDKs**: Update within 1 year of release
+
+### Known Compatibility Issues
+
+#### UniFFI 0.28 → 0.30
+- **Breaking**: Attribute syntax changed (`#[uniffi::export]` instead of `#[uniffi(...)]`)
+- **Breaking**: Error handling syntax changed
+- **Migration**: Update all annotations, regenerate bindings
+
+#### Rust 1.75 → 1.80
+- **Change**: WASM target updates
+- **Change**: Improved error messages
+- **Impact**: None for this template
+
+#### Android NDK r23 → r25
+- **Change**: Deprecated support for API < 21
+- **Change**: Updated linker behavior
+- **Impact**: Update minimum API level to 21
+
+### Testing Compatibility
+
+To verify compatibility with your versions:
+
+```bash
+# Check versions
+rustc --version
+cargo --version
+xcodebuild -version
+echo $ANDROID_NDK_ROOT
+
+# Run compatibility test
+./scripts/build-all.sh && ./scripts/test-all.sh
+```
+
+### Updating Dependencies
+
+**Safe Update Process:**
+
+1. **Update one component at a time**
+   ```bash
+   cargo update --package uniffi
+   ./scripts/build-all.sh
+   ./scripts/test-all.sh
+   ```
+
+2. **Test on all platforms**
+   - Build succeeds on all targets
+   - All tests pass
+   - Example apps still work
+
+3. **Document breaking changes**
+   - Update this compatibility matrix
+   - Note migration steps in CHANGELOG.md
+
+### Getting Help with Compatibility
+
+- **Rust/Cargo**: Check [Rust release notes](https://github.com/rust-lang/rust/releases)
+- **UniFFI**: See [UniFFI changelog](https://github.com/mozilla/uniffi-rs/blob/main/CHANGELOG.md)
+- **Android NDK**: Review [NDK release notes](https://developer.android.com/ndk/downloads/revision_history)
+- **Xcode**: Check [Xcode release notes](https://developer.apple.com/documentation/xcode-release-notes)
 
 ---
 

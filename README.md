@@ -9,6 +9,10 @@ A template project for creating Rust libraries that can be embedded in multiple 
 - [Quick Start](#quick-start)
   - [Prerequisites](#prerequisites)
   - [Setup](#setup)
+- [Demo Applications](#demo-applications)
+  - [iOS/macOS App](#iosmacos-app)
+  - [Android App](#android-app)
+  - [Desktop CLI App](#desktop-cli-app)
 - [Building](#building)
   - [Build All Platforms](#build-all-platforms)
   - [Build Specific Platforms](#build-specific-platforms)
@@ -56,7 +60,10 @@ This template includes three simple example functions:
 
 - **Rust** - Install from [rustup.rs](https://rustup.rs/)
 - **Xcode** (for iOS/macOS) - Required for Apple platforms
-- **Android NDK** (for Android) - Set `NDK_HOME` environment variable
+- **Android SDK & NDK** (for Android/JVM) - Required for Kotlin multiplatform builds
+  - Set `ANDROID_HOME` environment variable, or
+  - Create `platforms/kotlin/local.properties` with `sdk.dir` path
+  - See [platforms/kotlin/README.md](platforms/kotlin/README.md) for setup details
 
 ### Setup
 
@@ -69,6 +76,90 @@ This template includes three simple example functions:
 ```
 
 That's it! The library is now built for iOS, macOS, Android, and JVM.
+
+## Demo Applications
+
+This template includes three complete demo applications that show how to use the Rust library:
+
+### iOS/macOS App
+
+A SwiftUI app for iOS 14+ and macOS 11+ with interactive UI.
+
+**Location:** `apps/apple/`
+
+**Run:**
+```bash
+# 1. Build the library
+./scripts/build-apple.sh
+
+# 2. Open in Xcode
+cd apps/apple
+open TemplateDemo.xcodeproj
+
+# 3. Select iPhone simulator or My Mac, then press Cmd+R
+```
+
+**Features:**
+- Color-coded sections for each function
+- Text input field for echo testing
+- Real-time result display
+- Error handling with alerts
+
+### Android App
+
+A Jetpack Compose app for Android 5.0+ (API 21+).
+
+**Location:** `apps/android/`
+
+**Run:**
+```bash
+# 1. Build the Kotlin library
+./scripts/build-kotlin.sh
+
+# 2. Build the AAR (Android Archive)
+cd platforms/kotlin
+./gradlew assembleRelease
+cd ../..
+
+# 3. Open in Android Studio
+# File -> Open -> Select apps/android/
+
+# 4. Run on emulator or device
+```
+
+**Features:**
+- Material Design 3 with Jetpack Compose
+- Color-coded cards for each function
+- Interactive text input
+- Modern Android UI patterns
+
+### Desktop CLI App
+
+A command-line JVM application that runs on macOS, Linux, and Windows.
+
+**Location:** `apps/desktop/`
+
+**Run:**
+```bash
+# 1. Build the Kotlin library and publish to Maven Local
+cd platforms/kotlin
+./gradlew publishToMavenLocal
+cd ../..
+
+# 2. Run the desktop app
+cd apps/desktop
+./gradlew run
+
+# Or build a standalone JAR
+./gradlew jar
+java -jar build/libs/template-demo-desktop-1.0.0.jar
+```
+
+**Features:**
+- Automated testing of all three functions
+- Detailed output with statistics
+- Portable JAR file
+- No GUI dependencies
 
 ## Building
 
@@ -145,12 +236,12 @@ rust-multiplatform-template-lib/
 │   ├── lib.rs                    # Library entry point
 │   ├── template.rs               # Core Rust functions
 │   ├── uniffi_wrapper.rs         # UniFFI bindings wrapper
-│   ├── template.udl              # UniFFI interface definition
+│   ├── error.rs                  # Error types
 │   └── bin/
 │       └── uniffi-bindgen.rs     # UniFFI code generator
 ├── tests/                        # Rust integration tests
 │   └── template_tests.rs         # Test suite
-├── platforms/
+├── platforms/                    # Platform-specific bindings
 │   ├── apple/                    # iOS/macOS Swift package
 │   │   ├── Package.swift         # Swift Package Manager manifest
 │   │   ├── Sources/Template/     # Generated Swift bindings
@@ -164,6 +255,21 @@ rust-multiplatform-template-lib/
 │       │   ├── jniLibs/              # Android native libraries
 │       │   └── jvmMain/kotlin/       # JVM native libraries
 │       └── settings.gradle.kts
+├── apps/                         # Demo applications
+│   ├── apple/                    # iOS/macOS SwiftUI app
+│   │   ├── TemplateDemo.xcodeproj/   # Xcode project
+│   │   ├── TemplateDemo/             # Source files
+│   │   └── README.md
+│   ├── android/                  # Android Compose app
+│   │   ├── app/                      # App module
+│   │   │   ├── src/main/             # Source files
+│   │   │   └── build.gradle.kts
+│   │   ├── build.gradle.kts
+│   │   └── settings.gradle.kts
+│   └── desktop/                  # Desktop CLI JVM app
+│       ├── src/main/kotlin/          # Kotlin source
+│       ├── build.gradle.kts
+│       └── settings.gradle.kts
 ├── scripts/                      # Build, test, and documentation scripts
 │   ├── build-all.sh              # Build all platforms
 │   ├── build-apple.sh            # Build script for iOS/macOS
@@ -174,6 +280,8 @@ rust-multiplatform-template-lib/
 │   ├── doc-all.sh                # Generate documentation
 │   └── setup.sh                  # Install Rust targets
 ├── Cargo.toml                    # Rust package manifest
+├── DEVELOPMENT.md                # Development guide
+├── CONTRIBUTING.md               # Contributing guidelines
 └── README.md                     # This file
 ```
 

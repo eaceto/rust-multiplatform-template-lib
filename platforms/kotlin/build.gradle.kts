@@ -17,6 +17,11 @@ kotlin {
     // Android target
     androidTarget {
         publishLibraryVariants("release", "debug")
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
     }
 
     // JVM target (Desktop)
@@ -30,18 +35,33 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation("net.java.dev.jna:jna:5.13.0")
-            }
-        }
+        val commonMain by getting
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
-        val jvmMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("net.java.dev.jna:jna:5.13.0@aar")
+            }
+        }
+        val jvmMain by getting {
+            dependencies {
+                implementation("net.java.dev.jna:jna:5.13.0")
+            }
+            resources.srcDirs("src/jvmMain/kotlin")
+        }
+    }
+}
+
+// Include native library in JVM JAR
+tasks.named<Jar>("jvmJar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(file("src/jvmMain/kotlin")) {
+        include("**/*.dylib")
+        include("**/*.so")
+        include("**/*.dll")
     }
 }
 
@@ -54,6 +74,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("src/jniLibs")
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Building Rust Multiplatform Template for all platforms..."
+echo "Building for all platforms..."
 echo ""
 
 # Navigate to project root
@@ -11,17 +11,17 @@ cd "$(dirname "$0")/.."
 FAILED_BUILDS=()
 
 # Build Apple platforms (iOS, macOS)
-echo "════════════════════════════════════════════════════════════"
-echo "1️⃣  Building Apple Platforms (iOS, macOS)"
-echo "════════════════════════════════════════════════════════════"
+echo "============================================================"
+echo "Building Apple Platforms (iOS, macOS)"
+echo "============================================================"
 echo ""
 
 if ./scripts/build-apple.sh; then
     echo ""
-    echo "✅ Apple platforms build successful"
+    echo "[SUCCESS] Apple platforms build successful"
 else
     echo ""
-    echo "❌ Apple platforms build failed"
+    echo "[FAILED] Apple platforms build failed"
     FAILED_BUILDS+=("Apple")
 fi
 
@@ -29,17 +29,17 @@ echo ""
 echo ""
 
 # Build Kotlin platforms (Android, JVM)
-echo "════════════════════════════════════════════════════════════"
-echo "2️⃣  Building Kotlin Platforms (Android, JVM)"
-echo "════════════════════════════════════════════════════════════"
+echo "============================================================"
+echo "Building Kotlin Platforms (Android, JVM)"
+echo "============================================================"
 echo ""
 
 if ./scripts/build-kotlin.sh; then
     echo ""
-    echo "✅ Kotlin platforms build successful"
+    echo "[SUCCESS] Kotlin platforms build successful"
 else
     echo ""
-    echo "❌ Kotlin platforms build failed"
+    echo "[FAILED] Kotlin platforms build failed"
     FAILED_BUILDS+=("Kotlin")
 fi
 
@@ -47,15 +47,15 @@ echo ""
 echo ""
 
 # Summary
-echo "════════════════════════════════════════════════════════════"
-echo "📊 Build Summary"
-echo "════════════════════════════════════════════════════════════"
+echo "============================================================"
+echo "Build Summary"
+echo "============================================================"
 echo ""
 
 if [ ${#FAILED_BUILDS[@]} -eq 0 ]; then
-    echo "✅ All platform builds completed successfully!"
+    echo "[SUCCESS] All platform builds completed successfully!"
     echo ""
-    echo "📦 Build Artifacts:"
+    echo "Build Artifacts:"
     echo ""
     echo "Apple Platforms:"
     echo "   - XCFramework: platforms/apple/xcframework/librust_multiplatform_template_lib.xcframework"
@@ -68,13 +68,11 @@ if [ ${#FAILED_BUILDS[@]} -eq 0 ]; then
     echo "   - Kotlin bindings: platforms/kotlin/src/commonMain/kotlin/"
     echo "   - Gradle project: platforms/kotlin/build.gradle.kts"
     echo ""
-    echo "🎉 Everything is ready to use!"
-    echo ""
     exit 0
 else
-    echo "⚠️  Some builds failed:"
+    echo "[WARNING] Some builds failed:"
     for platform in "${FAILED_BUILDS[@]}"; do
-        echo "   ❌ $platform"
+        echo "   [FAILED] $platform"
     done
     echo ""
     echo "Please check the error messages above and ensure:"

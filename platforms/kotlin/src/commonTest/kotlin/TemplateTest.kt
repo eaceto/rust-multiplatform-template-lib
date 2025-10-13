@@ -3,7 +3,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import template.*
+import uniffi.rust_multiplatform_template_lib.*
 
 class TemplateTest {
     @Test

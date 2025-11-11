@@ -6,16 +6,8 @@ fun main() {
     printHeader()
     println()
 
-    // Test 1: Hello World
-    testHelloWorld()
-    println()
-
-    // Test 2: Echo
-    testEcho()
-    println()
-
-    // Test 3: Random
-    testRandom()
+    // Test: Backend Info (LLM)
+    testBackendInfo()
     println()
 
     printFooter()
@@ -23,108 +15,51 @@ fun main() {
 
 fun printHeader() {
     println("=" .repeat(60))
-    println("Rust Multiplatform Template - Desktop CLI Demo")
+    println("Rust LLM Library - Desktop CLI Demo")
     println("=" .repeat(60))
-    println("Testing Rust functions via UniFFI from JVM")
+    println("Powered by HuggingFace Candle")
 }
 
 fun printFooter() {
     println("=" .repeat(60))
-    println("All tests completed!")
+    println("Demo completed!")
     println("=" .repeat(60))
 }
 
-fun testHelloWorld() {
+fun testBackendInfo() {
     println("-" .repeat(60))
-    println("[TEST 1/3] Hello World")
+    println("[TEST] Backend Info (LLM - Candle)")
     println("-" .repeat(60))
-    println("Description: Tests a simple boolean return from Rust")
+    println("Description: Detects available compute backends for LLM inference")
     println()
 
     try {
-        print("Calling helloWorld()... ")
-        val result = helloWorld()
+        print("Calling getBackendInfo()... ")
+        val result = getBackendInfo()
         println("[SUCCESS]")
-        println("Result: $result")
-        println("Type: ${result::class.simpleName}")
+        println("Backend Information:")
+        println("  $result")
+        println()
+
+        // Parse and display components
+        if (result.contains("Candle backend")) {
+            println("  ✓ Candle library detected")
+        }
+        if (result.contains("Metal")) {
+            println("  ✓ Metal backend available (Apple GPU acceleration)")
+        }
+        if (result.contains("CPU")) {
+            println("  ✓ CPU backend available")
+        }
+        if (result.contains("threads")) {
+            val threadsMatch = Regex("""(\d+)""").find(result)
+            threadsMatch?.let {
+                println("  ✓ Available CPU threads: ${it.value}")
+            }
+        }
     } catch (e: Exception) {
         println("[FAILED]")
         println("Error: ${e.message}")
         e.printStackTrace()
-    }
-}
-
-fun testEcho() {
-    println("-" .repeat(60))
-    println("[TEST 2/3] Echo")
-    println("-" .repeat(60))
-    println("Description: Returns the input string, or null if empty")
-    println()
-
-    val testInputs = listOf(
-        "Hello from Kotlin/JVM!",
-        "Testing UniFFI",
-        "",
-        "Rust is awesome"
-    )
-
-    testInputs.forEachIndexed { index, input ->
-        try {
-            val displayInput = if (input.isEmpty()) "(empty string)" else "\"$input\""
-            print("  [${index + 1}/${testInputs.size}] Calling echo($displayInput)... ")
-
-            val result = echo(input)
-
-            if (result != null) {
-                println("[SUCCESS]")
-                println("      Result: \"$result\"")
-            } else {
-                println("[SUCCESS]")
-                println("      Result: null (as expected for empty input)")
-            }
-        } catch (e: Exception) {
-            println("[FAILED]")
-            println("      Error: ${e.message}")
-        }
-        println()
-    }
-}
-
-fun testRandom() {
-    println("-" .repeat(60))
-    println("[TEST 3/3] Random Number Generator")
-    println("-" .repeat(60))
-    println("Description: Generates random numbers between 0.0 and 1.0")
-    println()
-
-    val numTests = 5
-    val results = mutableListOf<Double>()
-
-    println("  Generating $numTests random numbers:")
-    println()
-
-    repeat(numTests) { index ->
-        try {
-            print("  [${index + 1}/$numTests] Calling random()... ")
-            val result = random()
-            results.add(result)
-            println("[SUCCESS]")
-            println("      Result: ${"%.8f".format(result)}")
-        } catch (e: Exception) {
-            println("[FAILED]")
-            println("      Error: ${e.message}")
-        }
-    }
-
-    if (results.isNotEmpty()) {
-        println()
-        println("  Statistics:")
-        println("    Min:     ${"%.8f".format(results.minOrNull())}")
-        println("    Max:     ${"%.8f".format(results.maxOrNull())}")
-        println("    Average: ${"%.8f".format(results.average())}")
-
-        // Verify all results are in valid range
-        val allInRange = results.all { it in 0.0..1.0 }
-        println("    All values in range [0.0, 1.0]: $allInRange")
     }
 }

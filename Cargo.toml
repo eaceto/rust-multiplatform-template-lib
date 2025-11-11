@@ -20,14 +20,17 @@ name = "uniffi-bindgen"
 path = "src/bin/uniffi-bindgen.rs"
 
 [dependencies]
-# Random number generation
-rand = "0.9"
-
 # Error handling
 thiserror = "2.0"
 
 # UniFFI for Swift/Kotlin bindings
 uniffi = { version = "0.30", features = ["cli"] }
+
+# Candle for LLM inference
+candle-core = "0.9.1"
+candle-transformers = "0.9.1"
+candle-nn = "0.9.1"
+tokenizers = "0.21"
 
 [build-dependencies]
 uniffi = { version = "0.30", features = ["build"] }

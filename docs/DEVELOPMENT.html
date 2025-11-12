@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Guide - Rust Multiplatform Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 { color: #004e89; }
+        h1 { border-bottom: 3px solid #ff6b35; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #1a659e; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1a659e;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        a { color: #1a659e; text-decoration: none; }
+        a:hover { color: #ff6b35; text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #004e89;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        blockquote {
+            border-left: 4px solid #ff6b35;
+            padding-left: 20px;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        .nav {
+            background: #004e89;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="README.html">📋 README</a>
+        <a href="DEVELOPMENT.html">🔧 Development</a>
+        <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
+        <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+        <a href="lib/index.html">📖 API Docs</a>
+    </div>
+    <div class="container">
+        <h1 id="development-guide">Development Guide</h1>
+<p>This guide is for developers who want to build, test, and contribute to this library.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#development-setup">Development Setup</a></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#building">Building</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#customization">Customization</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#version-compatibility-matrix">Version Compatibility Matrix</a></li>
+</ul>
+<hr />
+<h2 id="quick-start">Quick Start</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Install required Rust targets</span>
+./scripts/setup.sh
+
+<span class="c1"># 2. Build for all platforms</span>
+./scripts/build-all.sh
+
+<span class="c1"># 3. Run all tests</span>
+./scripts/test-all.sh
+
+<span class="c1"># 4. Generate documentation</span>
+./scripts/doc-all.sh
+</code></pre></div>
+
+<hr />
+<h2 id="development-setup">Development Setup</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Rust</strong> (stable): Install from <a href="https://rustup.rs/">rustup.rs</a></li>
+<li><strong>Xcode</strong> (for iOS/macOS): Install from Mac App Store</li>
+<li><strong>Android NDK</strong> (for Android): Set <code>NDK_HOME</code> environment variable</li>
+<li><strong>Jazzy</strong> (optional, for Swift docs): <code>gem install jazzy</code></li>
+<li><strong>Gradle</strong> (optional, for Kotlin): Included via wrapper or install separately</li>
+</ul>
+<h3 id="initial-setup">Initial Setup</h3>
+<p>Run the setup script to install all required Rust compilation targets:</p>
+<div class="codehilite"><pre><span></span><code>./scripts/setup.sh
+</code></pre></div>
+
+<p>This installs targets for:
+- iOS (device + simulator)
+- macOS (Apple Silicon)
+- Android (all architectures)
+- Linux, Windows, WebAssembly</p>
+<hr />
+<h2 id="project-structure">Project Structure</h2>
+<div class="codehilite"><pre><span></span><code><span class="p">.</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="w">                          </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">code</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">lib</span><span class="p">.</span><span class="nx">rs</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Library</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="nx">point</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">rs</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Core</span><span class="w"> </span><span class="nx">implementation</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">uniffi_wrapper</span><span class="p">.</span><span class="nx">rs</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">UniFFI</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">error</span><span class="p">.</span><span class="nx">rs</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Error</span><span class="w"> </span><span class="nx">types</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">tests</span><span class="o">/</span><span class="w">                        </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">integration</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">template_tests</span><span class="p">.</span><span class="nx">rs</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">platforms</span><span class="o">/</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">apple</span><span class="o">/</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="kn">package</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">Package</span><span class="p">.</span><span class="nx">swift</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">Sources</span><span class="o">/</span><span class="nx">Template</span><span class="o">/</span><span class="w">     </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">Tests</span><span class="o">/</span><span class="nx">TemplateTests</span><span class="o">/</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">kotlin</span><span class="o">/</span><span class="w">                   </span><span class="err">#</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">project</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="nx">commonMain</span><span class="o">/</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="nx">commonTest</span><span class="o">/</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">scripts</span><span class="o">/</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="p">,</span><span class="w"> </span><span class="nx">test</span><span class="p">,</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">documentation</span><span class="w"> </span><span class="nx">scripts</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="nx">platforms</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">apple</span><span class="p">.</span><span class="nx">sh</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">kotlin</span><span class="p">.</span><span class="nx">sh</span><span class="w">           </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Run</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">apple</span><span class="p">.</span><span class="nx">sh</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">kotlin</span><span class="p">.</span><span class="nx">sh</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">doc</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Generate</span><span class="w"> </span><span class="nx">documentation</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">setup</span><span class="p">.</span><span class="nx">sh</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Install</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">targets</span>
+<span class="err">└──</span><span class="w"> </span><span class="nx">Cargo</span><span class="p">.</span><span class="nx">toml</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">configuration</span>
+</code></pre></div>
+
+<h3 id="architecture">Architecture</h3>
+<p>This library uses <strong>UniFFI</strong> to generate language bindings:</p>
+<ol>
+<li><strong>Rust Core</strong> (<code>src/template.rs</code>): Pure Rust implementation</li>
+<li><strong>UniFFI Wrapper</strong> (<code>src/uniffi_wrapper.rs</code>): Exports functions with <code>#[uniffi::export]</code></li>
+<li><strong>Generated Bindings</strong>: Build scripts generate Swift/Kotlin code automatically</li>
+</ol>
+<hr />
+<h2 id="building">Building</h2>
+<h3 id="build-all-platforms">Build All Platforms</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/build-all.sh
+</code></pre></div>
+
+<p>This builds:
+- iOS (arm64 device + simulators)
+- macOS (Apple Silicon)
+- Android (all architectures)
+- JVM (macOS/Linux)</p>
+<h3 id="build-specific-platforms">Build Specific Platforms</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/build-apple.sh<span class="w">    </span><span class="c1"># iOS + macOS only</span>
+./scripts/build-kotlin.sh<span class="w">   </span><span class="c1"># Android + JVM only</span>
+cargo<span class="w"> </span>build<span class="w">                 </span><span class="c1"># Rust library only</span>
+</code></pre></div>
+
+<h3 id="build-outputs">Build Outputs</h3>
+<ul>
+<li><strong>iOS/macOS</strong>: <code>platforms/apple/xcframework/librust_multiplatform_template_lib.xcframework</code></li>
+<li><strong>Android</strong>: <code>platforms/kotlin/src/jniLibs/{arch}/librust_multiplatform_template_lib.so</code></li>
+<li><strong>JVM</strong>: <code>platforms/kotlin/src/jvmMain/kotlin/librust_multiplatform_template_lib.dylib</code></li>
+</ul>
+<h3 id="build-options">Build Options</h3>
+<p>For release builds with optimizations, the scripts use <code>--release</code> by default. For debug builds:</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>build<span class="w"> </span>--target<span class="w"> </span>aarch64-apple-ios
+</code></pre></div>
+
+<hr />
+<h2 id="testing">Testing</h2>
+<h3 id="run-all-tests">Run All Tests</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/test-all.sh
+</code></pre></div>
+
+<p>This runs:
+- Rust unit tests
+- Rust integration tests
+- Rust doc tests
+- Swift tests (iOS/macOS)
+- Kotlin tests (Android/JVM, if Gradle available)</p>
+<h3 id="run-specific-test-suites">Run Specific Test Suites</h3>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span><span class="nb">test</span><span class="w">                      </span><span class="c1"># Rust tests only</span>
+./scripts/test-apple.sh<span class="w">         </span><span class="c1"># Swift tests only</span>
+./scripts/test-kotlin.sh<span class="w">        </span><span class="c1"># Kotlin tests only</span>
+</code></pre></div>
+
+<h3 id="writing-tests">Writing Tests</h3>
+<h4 id="rust-tests">Rust Tests</h4>
+<p>Add integration tests in <code>tests/template_tests.rs</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">rust_multiplatform_template_lib</span>::<span class="p">{</span><span class="n">random</span><span class="p">,</span><span class="w"> </span><span class="n">echo</span><span class="p">};</span>
+
+<span class="cp">#[test]</span>
+<span class="k">fn</span> <span class="nf">test_your_feature</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio_test</span>::<span class="n">block_on</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">random</span><span class="p">().</span><span class="k">await</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="swift-tests">Swift Tests</h4>
+<p>Edit <code>platforms/apple/Tests/TemplateTests/TemplateTests.swift</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">func</span> <span class="nf">testYourFeature</span><span class="p">()</span> <span class="kr">throws</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">random</span><span class="p">()</span>
+    <span class="n">XCTAssertTrue</span><span class="p">(</span><span class="n">result</span> <span class="o">&gt;=</span> <span class="mf">0.0</span> <span class="o">&amp;&amp;</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">XCTAssertEqual</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s">&quot;test&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="kotlin-tests">Kotlin Tests</h4>
+<p>Edit <code>platforms/kotlin/src/commonTest/kotlin/TemplateTest.kt</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">testYourFeature</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">templateRandom</span><span class="p">()</span>
+<span class="w">    </span><span class="n">assertTrue</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0.0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1.0</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="documentation">Documentation</h2>
+<h3 id="generate-all-documentation">Generate All Documentation</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/doc-all.sh
+</code></pre></div>
+
+<p>Generates:
+- <strong>Rust</strong>: <code>docs/lib/</code> (using <code>cargo doc</code>)</p>
+<h3 id="view-documentation-locally">View Documentation Locally</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># macOS</span>
+open<span class="w"> </span>docs/lib/index.html
+
+<span class="c1"># Linux</span>
+xdg-open<span class="w"> </span>docs/lib/index.html
+
+<span class="c1"># Or start a local server</span>
+<span class="nb">cd</span><span class="w"> </span>docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<span class="c1"># Open http://localhost:8000/lib/</span>
+</code></pre></div>
+
+<h3 id="publishing-documentation">Publishing Documentation</h3>
+<p>The recommended approach is <strong>GitHub Pages</strong>:</p>
+<ol>
+<li>Generate docs: <code>./scripts/doc-all.sh</code></li>
+<li>Commit: <code>git add docs/ &amp;&amp; git commit -m "Update docs"</code></li>
+<li>Push: <code>git push</code></li>
+<li>Enable GitHub Pages in repository settings (source: <code>/docs</code>)</li>
+</ol>
+<h3 id="writing-documentation">Writing Documentation</h3>
+<p>Add documentation to your Rust code:</p>
+<div class="codehilite"><pre><span></span><code><span class="sd">/// Brief description of function</span>
+<span class="sd">///</span>
+<span class="sd">/// More detailed explanation...</span>
+<span class="sd">///</span>
+<span class="sd">/// # Arguments</span>
+<span class="sd">/// * `input` - Description of parameter</span>
+<span class="sd">///</span>
+<span class="sd">/// # Returns</span>
+<span class="sd">/// Description of return value</span>
+<span class="sd">///</span>
+<span class="sd">/// # Errors</span>
+<span class="sd">/// When this function can fail</span>
+<span class="sd">///</span>
+<span class="sd">/// # Example</span>
+<span class="sd">/// ```</span>
+<span class="sd">/// use your_lib::your_function;</span>
+<span class="sd">/// let result = your_function(&quot;test&quot;);</span>
+<span class="sd">/// ```</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">your_function</span><span class="p">(</span><span class="n">input</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// implementation</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="customization">Customization</h2>
+<h3 id="adding-new-functions">Adding New Functions</h3>
+<ol>
+<li><strong>Add to Rust</strong> (<code>src/template.rs</code>):</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new_function</span><span class="p">(</span><span class="n">param</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">i32</span> <span class="p">{</span>
+<span class="w">    </span><span class="n">param</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">i32</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Expose via UniFFI</strong> (<code>src/uniffi_wrapper.rs</code>):</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new_function</span><span class="p">(</span><span class="n">param</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">i32</span> <span class="p">{</span>
+<span class="w">    </span><span class="n">template</span>::<span class="n">new_function</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Rebuild</strong>:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>./scripts/build-all.sh
+</code></pre></div>
+
+<p>The Swift and Kotlin bindings are generated automatically!</p>
+<h3 id="working-with-complex-types">Working with Complex Types</h3>
+<h4 id="structsrecords">Structs/Records</h4>
+<div class="codehilite"><pre><span></span><code><span class="c1">// In uniffi_wrapper.rs</span>
+<span class="cp">#[derive(uniffi::Record)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Person</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">age</span>: <span class="kt">u32</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">create_person</span><span class="p">(</span><span class="n">name</span>: <span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">age</span>: <span class="kt">u32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Person</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Person</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="enums">Enums</h4>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[derive(uniffi::Enum)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Active</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Inactive</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_status</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Status</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Status</span>::<span class="n">Active</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="error-handling">Error Handling</h4>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[derive(Debug, thiserror::Error, uniffi::Error)]</span>
+<span class="cp">#[uniffi(flat_error)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">MyError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#[error(</span><span class="s">&quot;Invalid input: {message}&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">InvalidInput</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">message</span>: <span class="nb">String</span> <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">risky_function</span><span class="p">(</span><span class="n">value</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">MyError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">MyError</span>::<span class="n">InvalidInput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">message</span>: <span class="s">&quot;Must be positive&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;Success: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="renaming-the-library">Renaming the Library</h3>
+<p>To rename from <code>rust-multiplatform-template-lib</code> to your own name:</p>
+<ol>
+<li><strong>Cargo.toml</strong>: Change <code>name = "your-library-name"</code></li>
+<li><strong>Package.swift</strong>: Update all occurrences of <code>Template</code></li>
+<li><strong>build.gradle.kts</strong>: Update <code>group</code> and <code>rootProject.name</code></li>
+<li><strong>Build scripts</strong>: Replace <code>librust_multiplatform_template_lib</code> with <code>libyour_library_name</code></li>
+<li>Rename directories in <code>platforms/apple/Sources/</code> and <code>platforms/apple/Tests/</code></li>
+</ol>
+<h3 id="adding-dependencies">Adding Dependencies</h3>
+<p>Add to <code>Cargo.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">serde</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;derive&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="n">serde_json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+</code></pre></div>
+
+<p>Dependencies used in public APIs must be converted to UniFFI-compatible types.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="build-issues">Build Issues</h3>
+<p><strong>Problem</strong>: Target not installed</p>
+<div class="codehilite"><pre><span></span><code><span class="k">error</span><span class="o">:</span><span class="w"> </span><span class="n">can</span><span class="s1">&#39;t find crate for `core`</span>
+</code></pre></div>
+
+<p><strong>Solution</strong>: Run setup script</p>
+<div class="codehilite"><pre><span></span><code>./scripts/setup.sh
+</code></pre></div>
+
+<hr />
+<p><strong>Problem</strong>: UniFFI bindings not generated</p>
+<div class="codehilite"><pre><span></span><code><span class="n">error</span><span class="o">:</span><span class="w"> </span><span class="n">cannot</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="n">rust_multiplatform_template_lib</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">scope</span>
+</code></pre></div>
+
+<p><strong>Solution</strong>: The bindings are generated during build. Clean and rebuild:</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>clean
+./scripts/build-all.sh
+</code></pre></div>
+
+<hr />
+<p><strong>Problem</strong>: Android NDK not found</p>
+<div class="codehilite"><pre><span></span><code><span class="n">error</span><span class="o">:</span><span class="w"> </span><span class="n">linker</span><span class="w"> </span><span class="err">`</span><span class="n">aarch64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">android21</span><span class="o">-</span><span class="n">clang</span><span class="err">`</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">found</span>
+</code></pre></div>
+
+<p><strong>Solution</strong>: Set <code>NDK_HOME</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NDK_HOME</span><span class="o">=</span><span class="nv">$ANDROID_HOME</span>/ndk/29.0.13846066
+</code></pre></div>
+
+<h3 id="test-issues">Test Issues</h3>
+<p><strong>Problem</strong>: Swift tests fail with module not found</p>
+<p><strong>Solution</strong>: Build first, then test:</p>
+<div class="codehilite"><pre><span></span><code>./scripts/build-apple.sh
+./scripts/test-apple.sh
+</code></pre></div>
+
+<hr />
+<p><strong>Problem</strong>: Gradle not found for Kotlin tests</p>
+<p><strong>Solution</strong>: Tests will be gracefully skipped. To run them:
+1. Install Gradle, or
+2. Use the Gradle wrapper (if available in <code>platforms/kotlin/</code>)</p>
+<h3 id="documentation-issues">Documentation Issues</h3>
+<p><strong>Problem</strong>: Jazzy errors when generating Swift docs</p>
+<p><strong>Solution</strong>: Swift bindings are auto-generated by UniFFI. The main documentation is in Rust docs (<code>docs/rust/</code>), which always generates successfully. Swift/Kotlin docs are optional.</p>
+<hr />
+<h2 id="development-workflow">Development Workflow</h2>
+<p>Recommended workflow for making changes:</p>
+<ol>
+<li><strong>Make changes</strong> to Rust code in <code>src/</code></li>
+<li><strong>Add tests</strong> in <code>tests/</code> (Rust) and platform-specific test files</li>
+<li><strong>Run tests</strong>: <code>./scripts/test-all.sh</code></li>
+<li><strong>Build all platforms</strong>: <code>./scripts/build-all.sh</code></li>
+<li><strong>Generate docs</strong>: <code>./scripts/doc-all.sh</code></li>
+<li><strong>Commit changes</strong></li>
+</ol>
+<h3 id="before-committing">Before Committing</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Format code</span>
+cargo<span class="w"> </span>fmt
+
+<span class="c1"># Check for issues</span>
+cargo<span class="w"> </span>clippy
+
+<span class="c1"># Run all tests</span>
+./scripts/test-all.sh
+
+<span class="c1"># Ensure builds succeed</span>
+./scripts/build-all.sh
+</code></pre></div>
+
+<hr />
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="ffi-performance-considerations">FFI Performance Considerations</h3>
+<p><strong>Minimize FFI Boundary Crossings</strong>
+- Each call across the FFI boundary has overhead (~100-1000ns)
+- Batch operations when possible instead of making multiple small calls
+- Consider returning collections rather than iterating from Swift/Kotlin</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Bad: Multiple FFI calls</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="mi">1000</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">process_item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w">  </span><span class="c1">// 1000 FFI calls</span>
+<span class="p">}</span>
+
+<span class="c1">// Good: Single FFI call</span>
+<span class="n">process_items_batch</span><span class="p">(</span><span class="fm">vec!</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">1000</span><span class="p">])</span><span class="w">  </span><span class="c1">// 1 FFI call</span>
+</code></pre></div>
+
+<p><strong>String Handling</strong>
+- String conversion (UTF-8 ↔ UTF-16) has cost
+- Prefer passing IDs/indices instead of strings when possible
+- Cache string lookups on the native side</p>
+<p><strong>Memory Management</strong>
+- UniFFI handles memory automatically, but be aware:
+  - Large data structures are copied across FFI
+  - Use references/handles for large objects when possible
+  - Swift: Objects are reference-counted (ARC)
+  - Kotlin: Objects are garbage-collected</p>
+<h3 id="platform-specific-gotchas">Platform-Specific Gotchas</h3>
+<h4 id="iosmacos">iOS/macOS</h4>
+<p><strong>Thread Safety</strong>
+- Rust functions may be called from any thread
+- Use <code>Arc&lt;Mutex&lt;T&gt;&gt;</code> or <code>Arc&lt;RwLock&lt;T&gt;&gt;</code> for shared mutable state
+- UniFFI exports are thread-safe by default</p>
+<p><strong>Memory Warnings</strong>
+- Large allocations in Rust aren't visible to iOS memory management
+- Monitor memory usage in your app
+- Consider implementing cleanup methods for large data structures</p>
+<p><strong>Background Execution</strong>
+- Long-running operations should be async
+- iOS may terminate background tasks
+- Use <code>Task</code> in Swift for async Rust calls</p>
+<h4 id="android">Android</h4>
+<p><strong>ProGuard/R8 Rules</strong>
+- If using ProGuard, add rules to keep JNI methods:</p>
+<div class="codehilite"><pre><span></span><code>-keep class uniffi.** { <span class="gs">*; }</span>
+<span class="gs">-keep class template.*</span>* { *; }
+</code></pre></div>
+
+<p><strong>NDK Version</strong>
+- Use NDK r21 or later for best compatibility
+- Set minimum API level appropriately (21+ recommended)</p>
+<p><strong>APK Size</strong>
+- Including all architectures increases APK size
+- Use Android App Bundles for automatic per-device optimization
+- Or create separate APKs per architecture</p>
+<p><strong>JNI Threading</strong>
+- Rust functions called from Kotlin may run on any thread
+- Avoid blocking the main thread with long operations</p>
+<h3 id="error-handling-best-practices">Error Handling Best Practices</h3>
+<p><strong>Use Result Types</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Preferred: Explicit error handling</span>
+<span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">parse_data</span><span class="p">(</span><span class="n">input</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Data</span><span class="p">,</span><span class="w"> </span><span class="n">MyError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Provide Context in Errors</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[derive(Debug, thiserror::Error, uniffi::Error)]</span>
+<span class="cp">#[uniffi(flat_error)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">MyError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#[error(</span><span class="s">&quot;Invalid input: {message} (got: {value})&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">InvalidInput</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">message</span>: <span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">value</span>: <span class="nb">String</span> <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Handle Panics Gracefully</strong>
+- Panics in Rust become exceptions in Swift/Kotlin
+- Catch panics in critical paths:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">panic</span>::<span class="n">catch_unwind</span><span class="p">;</span>
+
+<span class="cp">#[uniffi::export]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">safe_operation</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">MyError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">catch_unwind</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">risky_operation</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}).</span><span class="n">map_err</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="n">MyError</span>::<span class="n">Panic</span><span class="p">)</span><span class="o">?</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="testing-best-practices">Testing Best Practices</h3>
+<p><strong>Test at All Levels</strong>
+1. <strong>Rust unit tests</strong>: Test core logic
+2. <strong>Rust integration tests</strong>: Test public API
+3. <strong>Platform tests</strong>: Test FFI bindings work correctly</p>
+<p><strong>Mock External Dependencies</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[cfg(test)]</span>
+<span class="k">mod</span> <span class="nn">tests</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">use</span><span class="w"> </span><span class="k">super</span>::<span class="o">*</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cp">#[test]</span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">test_with_mock</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Test using mock instead of real network/file I/O</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Test Edge Cases</strong>
+- Empty strings/collections
+- Very large inputs
+- Null/None values
+- Concurrent access</p>
+<h3 id="documentation-best-practices">Documentation Best Practices</h3>
+<p><strong>Document All Public APIs</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="sd">/// Brief one-line description</span>
+<span class="sd">///</span>
+<span class="sd">/// Detailed explanation with examples and edge cases.</span>
+<span class="sd">///</span>
+<span class="sd">/// # Arguments</span>
+<span class="sd">/// * `param` - Description</span>
+<span class="sd">///</span>
+<span class="sd">/// # Returns</span>
+<span class="sd">/// Description of return value</span>
+<span class="sd">///</span>
+<span class="sd">/// # Errors</span>
+<span class="sd">/// * `MyError::InvalidInput` - When input is invalid</span>
+<span class="sd">///</span>
+<span class="sd">/// # Example</span>
+<span class="sd">/// ```</span>
+<span class="sd">/// let result = my_function(&quot;test&quot;)?;</span>
+<span class="sd">/// ```</span>
+</code></pre></div>
+
+<p><strong>Keep Examples Up to Date</strong>
+- Use <code>cargo test --doc</code> to verify doc examples compile</p>
+<p><strong>Document Platform-Specific Behavior</strong>
+- Note any differences in iOS vs Android behavior
+- Document thread safety guarantees</p>
+<hr />
+<h2 id="version-compatibility-matrix">Version Compatibility Matrix</h2>
+<h3 id="current-versions-tested">Current Versions (Tested)</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rust</strong></td>
+<td>1.83+</td>
+<td>Edition 2021 required</td>
+</tr>
+<tr>
+<td><strong>UniFFI</strong></td>
+<td>0.30.x</td>
+<td>Breaking changes between minor versions</td>
+</tr>
+<tr>
+<td><strong>Xcode</strong></td>
+<td>15.0+</td>
+<td>For iOS/macOS builds</td>
+</tr>
+<tr>
+<td><strong>iOS Deployment</strong></td>
+<td>13.0+</td>
+<td>Minimum supported version</td>
+</tr>
+<tr>
+<td><strong>macOS Deployment</strong></td>
+<td>11.0+</td>
+<td>Apple Silicon + Intel</td>
+</tr>
+<tr>
+<td><strong>Android NDK</strong></td>
+<td>r21+ (21.0+)</td>
+<td>r25+ recommended</td>
+</tr>
+<tr>
+<td><strong>Android Min SDK</strong></td>
+<td>21+ (Android 5.0+)</td>
+<td>API Level 21 minimum</td>
+</tr>
+<tr>
+<td><strong>Kotlin</strong></td>
+<td>1.9+</td>
+<td>For Kotlin Multiplatform</td>
+</tr>
+<tr>
+<td><strong>Gradle</strong></td>
+<td>8.0+</td>
+<td>For Android/JVM builds</td>
+</tr>
+<tr>
+<td><strong>Java/JVM</strong></td>
+<td>11+</td>
+<td>For JVM desktop targets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rust-toolchain-compatibility">Rust Toolchain Compatibility</h3>
+<table>
+<thead>
+<tr>
+<th>Rust Version</th>
+<th>UniFFI</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.83-1.85</td>
+<td>0.30.x</td>
+<td>✅ Tested</td>
+<td>Current stable</td>
+</tr>
+<tr>
+<td>1.80-1.82</td>
+<td>0.30.x</td>
+<td>✅ Compatible</td>
+<td>Should work</td>
+</tr>
+<tr>
+<td>1.75-1.79</td>
+<td>0.30.x</td>
+<td>⚠️ May work</td>
+<td>Not tested</td>
+</tr>
+<tr>
+<td>&lt; 1.75</td>
+<td>0.30.x</td>
+<td>❌ Not supported</td>
+<td>Edition 2021 issues</td>
+</tr>
+</tbody>
+</table>
+<h3 id="platform-sdk-compatibility">Platform SDK Compatibility</h3>
+<h4 id="apple-platforms">Apple Platforms</h4>
+<table>
+<thead>
+<tr>
+<th>Xcode</th>
+<th>Swift</th>
+<th>iOS SDK</th>
+<th>macOS SDK</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16.x</td>
+<td>6.0</td>
+<td>18.x</td>
+<td>15.x</td>
+<td>✅ Tested</td>
+</tr>
+<tr>
+<td>15.x</td>
+<td>5.9</td>
+<td>17.x</td>
+<td>14.x</td>
+<td>✅ Tested</td>
+</tr>
+<tr>
+<td>14.x</td>
+<td>5.7-5.8</td>
+<td>16.x</td>
+<td>13.x</td>
+<td>⚠️ Should work</td>
+</tr>
+<tr>
+<td>&lt; 14.0</td>
+<td>&lt; 5.7</td>
+<td>&lt; 16.0</td>
+<td>&lt; 13.0</td>
+<td>❌ Not tested</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- XCFramework requires Xcode 11+
+- Swift Package Manager works best with Xcode 14+
+- Apple Silicon requires Xcode 12+</p>
+<h4 id="android-platform">Android Platform</h4>
+<table>
+<thead>
+<tr>
+<th>NDK Version</th>
+<th>Min SDK</th>
+<th>Max SDK</th>
+<th>Rust Target</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r29 (29.x)</td>
+<td>21+</td>
+<td>35+</td>
+<td>1.83+</td>
+<td>✅ Tested</td>
+</tr>
+<tr>
+<td>r26-r28</td>
+<td>21+</td>
+<td>34+</td>
+<td>1.75+</td>
+<td>✅ Compatible</td>
+</tr>
+<tr>
+<td>r25</td>
+<td>21+</td>
+<td>33+</td>
+<td>1.70+</td>
+<td>⚠️ Should work</td>
+</tr>
+<tr>
+<td>r21-r24</td>
+<td>21+</td>
+<td>30+</td>
+<td>1.70+</td>
+<td>⚠️ May work</td>
+</tr>
+<tr>
+<td>&lt; r21</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>❌ Not supported</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NDK Architecture Support:</strong>
+- <code>arm64-v8a</code>: 64-bit ARM (recommended, most devices)
+- <code>armeabi-v7a</code>: 32-bit ARM (older devices)
+- <code>x86_64</code>: 64-bit x86 (emulators)
+- <code>x86</code>: 32-bit x86 (older emulators)</p>
+<h3 id="dependency-version-pinning">Dependency Version Pinning</h3>
+<p><strong>Critical Dependencies:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">uniffi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.30&quot;</span><span class="w">         </span><span class="c1"># Pin minor version - breaking changes common</span>
+<span class="n">rand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.9&quot;</span><span class="w">            </span><span class="c1"># Compatible with 0.9.x</span>
+<span class="n">thiserror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="w">       </span><span class="c1"># Stable, major version updates rare</span>
+
+<span class="k">[build-dependencies]</span>
+<span class="n">uniffi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;0.30&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;build&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Version Update Strategy:</strong>
+- <strong>UniFFI</strong>: Test thoroughly before upgrading minor versions
+- <strong>Rust</strong>: Keep within 6 months of latest stable
+- <strong>Platform SDKs</strong>: Update within 1 year of release</p>
+<h3 id="known-compatibility-issues">Known Compatibility Issues</h3>
+<h4 id="uniffi-028-030">UniFFI 0.28 → 0.30</h4>
+<ul>
+<li><strong>Breaking</strong>: Attribute syntax changed (<code>#[uniffi::export]</code> instead of <code>#[uniffi(...)]</code>)</li>
+<li><strong>Breaking</strong>: Error handling syntax changed</li>
+<li><strong>Migration</strong>: Update all annotations, regenerate bindings</li>
+</ul>
+<h4 id="rust-175-180">Rust 1.75 → 1.80</h4>
+<ul>
+<li><strong>Change</strong>: WASM target updates</li>
+<li><strong>Change</strong>: Improved error messages</li>
+<li><strong>Impact</strong>: None for this template</li>
+</ul>
+<h4 id="android-ndk-r23-r25">Android NDK r23 → r25</h4>
+<ul>
+<li><strong>Change</strong>: Deprecated support for API &lt; 21</li>
+<li><strong>Change</strong>: Updated linker behavior</li>
+<li><strong>Impact</strong>: Update minimum API level to 21</li>
+</ul>
+<h3 id="testing-compatibility">Testing Compatibility</h3>
+<p>To verify compatibility with your versions:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Check versions</span>
+rustc<span class="w"> </span>--version
+cargo<span class="w"> </span>--version
+xcodebuild<span class="w"> </span>-version
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$ANDROID_NDK_ROOT</span>
+
+<span class="c1"># Run compatibility test</span>
+./scripts/build-all.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./scripts/test-all.sh
+</code></pre></div>
+
+<h3 id="updating-dependencies">Updating Dependencies</h3>
+<p><strong>Safe Update Process:</strong></p>
+<ol>
+<li>
+<p><strong>Update one component at a time</strong>
+   <code>bash
+   cargo update --package uniffi
+   ./scripts/build-all.sh
+   ./scripts/test-all.sh</code></p>
+</li>
+<li>
+<p><strong>Test on all platforms</strong></p>
+</li>
+<li>Build succeeds on all targets</li>
+<li>All tests pass</li>
+<li>
+<p>Example apps still work</p>
+</li>
+<li>
+<p><strong>Document breaking changes</strong></p>
+</li>
+<li>Update this compatibility matrix</li>
+<li>Note migration steps in CHANGELOG.md</li>
+</ol>
+<h3 id="getting-help-with-compatibility">Getting Help with Compatibility</h3>
+<ul>
+<li><strong>Rust/Cargo</strong>: Check <a href="https://github.com/rust-lang/rust/releases">Rust release notes</a></li>
+<li><strong>UniFFI</strong>: See <a href="https://github.com/mozilla/uniffi-rs/blob/main/CHANGELOG.md">UniFFI changelog</a></li>
+<li><strong>Android NDK</strong>: Review <a href="https://developer.android.com/ndk/downloads/revision_history">NDK release notes</a></li>
+<li><strong>Xcode</strong>: Check <a href="https://developer.apple.com/documentation/xcode-release-notes">Xcode release notes</a></li>
+</ul>
+<hr />
+<h2 id="additional-resources">Additional Resources</h2>
+<ul>
+<li><a href="https://mozilla.github.io/uniffi-rs/">UniFFI Documentation</a></li>
+<li><a href="https://doc.rust-lang.org/book/">Rust Book</a></li>
+<li><a href="https://swift.org/package-manager/">Swift Package Manager</a></li>
+<li><a href="https://kotlinlang.org/docs/multiplatform.html">Kotlin Multiplatform</a></li>
+<li><a href="https://doc.rust-lang.org/cargo/">Cargo Book</a></li>
+</ul>
+<hr />
+<h2 id="contributing">Contributing</h2>
+<p>When contributing to this library:</p>
+<ol>
+<li>Follow the existing code style</li>
+<li>Add tests for new functionality</li>
+<li>Update documentation</li>
+<li>Ensure all tests pass</li>
+<li>Run <code>cargo fmt</code> and <code>cargo clippy</code></li>
+</ol>
+<hr />
+<p><strong>Happy coding! 🦀📱💻</strong></p>
+    </div>
+</body>
+</html>

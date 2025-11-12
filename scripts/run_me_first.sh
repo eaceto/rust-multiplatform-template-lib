@@ -315,18 +315,31 @@ if replace_in_file "src/lib.rs" "rust_multiplatform_template_lib" "$RUST_LIB_NAM
     print_success "Updated src/lib.rs"
 fi
 
-# UDL namespace
+# Update test files and doc tests
+print_info "Updating test files and doc tests..."
+find tests -name "*.rs" -type f -exec sed -i.bak "s/rust_multiplatform_template_lib/${RUST_LIB_NAME}/g" {} \;
+find tests -name "*.rs.bak" -type f -delete
+find src -name "*.rs" -type f -exec sed -i.bak "s/rust_multiplatform_template_lib/${RUST_LIB_NAME}/g" {} \;
+find src -name "*.rs.bak" -type f -delete
+print_success "Updated tests/ and doc tests in src/"
+
+# UDL namespace and file renaming
 print_info "Updating UniFFI namespace..."
+NEW_UDL_NAME=$(echo "$SWIFT_MODULE_NAME" | awk '{print tolower($0)}')
+
 replace_in_file "src/template.udl" "namespace Template" "namespace $SWIFT_MODULE_NAME"
 
 # Rename UDL file
 if [[ -f "src/template.udl" ]]; then
-    NEW_UDL_NAME=$(echo "$SWIFT_MODULE_NAME" | awk '{print tolower($0)}')
     mv "src/template.udl" "src/${NEW_UDL_NAME}.udl"
     print_success "Renamed template.udl → ${NEW_UDL_NAME}.udl"
 
     # Update reference in lib.rs
     replace_in_file "src/lib.rs" 'uniffi::include_scaffolding!("template")' "uniffi::include_scaffolding!(\"${NEW_UDL_NAME}\")"
+
+    # Update reference in build.rs
+    replace_in_file "build.rs" 'uniffi::generate_scaffolding("src/template.udl")' "uniffi::generate_scaffolding(\"src/${NEW_UDL_NAME}.udl\")"
+    print_success "Updated build.rs"
 fi
 
 # Swift Package
@@ -397,6 +410,14 @@ print_info "Updating documentation..."
 find . -name "*.md" -type f ! -path "*/target/*" ! -path "*/.git/*" -exec sed -i.bak "s/rust-multiplatform-template-lib/$RUST_CRATE_NAME/g" {} \;
 find . -name "*.md" -type f ! -path "*/target/*" ! -path "*/.git/*" -exec sed -i.bak "s/rust_multiplatform_template_lib/$RUST_LIB_NAME/g" {} \;
 find . -name "*.md.bak" -type f -delete
+
+# Update build scripts with hardcoded library names (exclude this script)
+print_info "Updating build scripts..."
+find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/librust_multiplatform_template_lib/lib${RUST_LIB_NAME}/g" {} \;
+find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/rust_multiplatform_template_lib/${RUST_LIB_NAME}/g" {} \;
+find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/src\/template\.udl/src\/${NEW_UDL_NAME}.udl/g" {} \;
+find scripts -name "*.sh.bak" -type f -delete
+print_success "Updated build scripts"
 
 print_success "Updated $MODIFIED_FILES files"
 

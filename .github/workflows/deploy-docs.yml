@@ -12,20 +12,95 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-and-deploy:
-    name: Build & Deploy Documentation
-    runs-on: macos-latest
+  rust-docs:
+    name: Generate Rust Documentation
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Rust targets
-        run: ./scripts/setup.sh
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-rust-docs-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-rust-docs-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-rust-docs-build-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Generate Rust documentation
+        run: ./scripts/doc-all.sh
+
+      - name: Upload Rust documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-docs
+          path: docs/
+          retention-days: 1
+
+  build-apple:
+    name: Build Apple Platforms
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Rust targets (Apple only)
+        run: |
+          rustup target add aarch64-apple-ios
+          rustup target add aarch64-apple-ios-sim
+          rustup target add x86_64-apple-ios
+          rustup target add aarch64-apple-darwin
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-apple-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-apple-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-apple-build-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build Apple platforms
+        run: ./scripts/build-apple.sh
+
+      - name: Upload Apple artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apple-build
+          path: platforms/apple/xcframework/
+          retention-days: 1
+
+  build-android:
+    name: Build Android/JVM Platforms
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Android NDK
         uses: nttld/setup-ndk@v1
@@ -33,31 +108,60 @@ jobs:
           ndk-version: r26d
           add-to-path: true
 
+      - name: Install Rust targets (Android/JVM only)
+        run: |
+          rustup target add aarch64-linux-android
+          rustup target add armv7-linux-androideabi
+          rustup target add i686-linux-android
+          rustup target add x86_64-linux-android
+
       - name: Cache cargo registry
         uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-android-registry-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache cargo index
         uses: actions/cache@v4
         with:
           path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-android-index-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache cargo build
         uses: actions/cache@v4
         with:
           path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-android-build-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Build all platforms
-        run: ./scripts/build-all.sh
+      - name: Build Android/JVM platforms
+        run: ./scripts/build-kotlin.sh
         env:
           NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
 
-      - name: Generate Rust documentation
-        run: ./scripts/doc-all.sh
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: |
+            platforms/kotlin/src/jniLibs/
+            platforms/kotlin/src/commonMain/kotlin/
+          retention-days: 1
+
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [rust-docs, build-apple, build-android]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Download Rust documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: rust-docs
+          path: docs/
 
       - name: Install markdown to HTML converter
         run: |
@@ -233,9 +337,10 @@ jobs:
         run: |
           GITHUB_SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)
           BUILD_DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
-          sed -i.bak "s/{{ GITHUB_SHA }}/$GITHUB_SHA_SHORT/g" docs/index.html
-          sed -i.bak "s/{{ BUILD_DATE }}/$BUILD_DATE/g" docs/index.html
-          rm docs/index.html.bak
+          if [ -f docs/index.html ]; then
+            sed -i "s/{{ GITHUB_SHA }}/$GITHUB_SHA_SHORT/g" docs/index.html
+            sed -i "s/{{ BUILD_DATE }}/$BUILD_DATE/g" docs/index.html
+          fi
 
       - name: Configure Git
         run: |

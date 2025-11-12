@@ -1,5 +1,5 @@
 use rust_multiplatform_template_lib::{
-    echo, random, CancellationToken, EchoResult, TemplateConfig, TemplateError, MAX_INPUT_SIZE,
+    echo, random, CancellationToken, TemplateConfig, TemplateError, MAX_INPUT_SIZE,
 };
 use std::sync::Arc;
 
@@ -112,7 +112,10 @@ async fn test_template_config() {
     assert!(config.enable_validation());
 
     // Test with valid input
-    let result = config.validate_and_echo("test".to_string(), None).await.unwrap();
+    let result = config
+        .validate_and_echo("test".to_string(), None)
+        .await
+        .unwrap();
     assert!(result.is_some());
     assert_eq!(result.unwrap().text, "test");
 

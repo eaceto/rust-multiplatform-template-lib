@@ -1,48 +1,51 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+echo "==> Setup checks for rust-multiplatform-template-lib"
 
-echo " Setting up - Installing required targets..."
-echo ""
+command -v rustup >/dev/null 2>&1 || { echo "ERROR: rustup not found in PATH"; exit 1; }
+command -v cargo >/dev/null 2>&1 || { echo "ERROR: cargo not found in PATH"; exit 1; }
 
-# Apple platforms
-echo " Installing Apple platform targets..."
-rustup target add aarch64-apple-ios
-rustup target add aarch64-apple-ios-sim
-rustup target add x86_64-apple-ios
-rustup target add aarch64-apple-darwin
-rustup target add x86_64-apple-darwin
+echo "-> Ensuring required rust targets are installed"
+RUST_TARGETS=(
+  "aarch64-apple-darwin"
+  "x86_64-apple-darwin"
+  "aarch64-linux-android"
+  "armv7-linux-androideabi"
+  "x86_64-linux-android"
+  "i686-linux-android"
+)
+for t in "${RUST_TARGETS[@]}"; do
+  if ! rustup target list --installed | grep -q "^${t}$"; then
+    echo "  Installing target: $t"
+    rustup target add "$t" || true
+  else
+    echo "  Target already installed: $t"
+  fi
+done
 
-echo ""
-echo " Installing Apple dependencies..."
-gem install jazzy
+echo "-> Checking Android NDK (if Android builds will be used)"
+if [[ -z "${NDK_HOME:-}" ]]; then
+  echo "  Warning: NDK_HOME is not set. Android builds may fail without it."
+else
+  if [[ ! -d "$NDK_HOME" ]]; then
+    echo "ERROR: NDK_HOME is set but directory not found: $NDK_HOME"
+    exit 1
+  else
+    echo "  Using NDK_HOME: $NDK_HOME"
+  fi
+fi
 
-# Android platforms
-echo "Installing Android platform targets..."
-rustup target add aarch64-linux-android
-rustup target add armv7-linux-androideabi
-rustup target add i686-linux-android
-rustup target add x86_64-linux-android
+echo "-> Checking for uniffi-bindgen availability via cargo run --bin uniffi-bindgen"
+if cargo run --bin uniffi-bindgen -- --version >/dev/null 2>&1; then
+  echo "  uniffi-bindgen appears invokable via cargo run --bin uniffi-bindgen"
+else
+  echo "  Note: uniffi-bindgen not invokable via cargo run --bin uniffi-bindgen (this may be fine if you call it differently)."
+fi
 
-# Linux platforms
-echo "Installing Linux platform targets..."
-rustup target add x86_64-unknown-linux-gnu
-rustup target add aarch64-unknown-linux-gnu
+echo "-> Checking basic tools"
+for cmd in git sed awk uname; do
+  command -v "$cmd" >/dev/null 2>&1 || { echo "ERROR: required command not found: $cmd"; exit 1; }
+done
 
-# -- Uncomment if needed --
-# Windows platforms
-# echo "Installing Windows platform targets..."
-# rustup target add x86_64-pc-windows-gnu
-# rustup target add x86_64-pc-windows-msvc
-
-# WebAssembly
-# echo "Installing WebAssembly target..."
-# rustup target add wasm32-unknown-unknown
-
-echo ""
-echo "[SUCCESS] All targets installed successfully!"
-echo ""
-echo " Installed targets:"
-rustup target list --installed | grep -E "(ios|darwin|android|linux|windows|wasm)"
-echo ""
-echo "[BUILD] You can now run ./build-all.sh to build for all platforms"
+echo "Setup checks complete."

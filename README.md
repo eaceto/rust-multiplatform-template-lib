@@ -48,11 +48,10 @@ The template uses [UniFFI](https://mozilla.github.io/uniffi-rs/) to automaticall
 
 ## Template Functions
 
-This template includes three simple example functions:
+This template includes two async example functions:
 
-- **`helloWorld()`** → Returns `true` (demonstrates simple boolean return)
-- **`echo(input: String)`** → Returns the input string, or `null`/`nil` if empty (demonstrates optional/nullable returns)
-- **`random()`** → Returns a random number between 0.0 and 1.0 (demonstrates working with dependencies)
+- **`echo(input, token)`** → Returns an EchoResult with text, length, and timestamp, or `null`/`nil` if empty (demonstrates optional returns, structured data, and cancellation)
+- **`random()`** → Returns a random number between 0.0 and 1.0 (demonstrates async functions and working with dependencies)
 
 ## Quick Start
 
@@ -94,7 +93,7 @@ A SwiftUI app for iOS 14+ and macOS 11+ with interactive UI.
 
 # 2. Open in Xcode
 cd apps/apple
-open TemplateDemo.xcodeproj
+open DemoApp.xcodeproj
 
 # 3. Select iPhone simulator or My Mac, then press Cmd+R
 ```
@@ -102,8 +101,9 @@ open TemplateDemo.xcodeproj
 **Features:**
 - Color-coded sections for each function
 - Text input field for echo testing
-- Real-time result display
+- Real-time result display with EchoResult metadata
 - Error handling with alerts
+- Async/await with Swift concurrency
 
 ### Android App
 
@@ -132,6 +132,7 @@ cd ../..
 - Color-coded cards for each function
 - Interactive text input
 - Modern Android UI patterns
+- Coroutines for async operations
 
 ### Desktop CLI App
 
@@ -156,10 +157,11 @@ java -jar build/libs/template-demo-desktop-1.0.0.jar
 ```
 
 **Features:**
-- Automated testing of all three functions
+- Automated testing of both functions
 - Detailed output with statistics
 - Portable JAR file
 - No GUI dependencies
+- Async support with Kotlin coroutines
 
 ## Building
 
@@ -195,9 +197,24 @@ This will build for all supported platforms (Apple, Android, JVM).
 ```swift
 import Template
 
-let result = helloWorld()  // returns true
-let text = echo(input: "Hello!")  // returns "Hello!"
-let number = random()  // returns a random Double between 0.0 and 1.0
+// Echo function (async)
+Task {
+    do {
+        let result = try await echo(input: "Hello!", token: nil)
+        if let echoResult = result {
+            print("Text: \(echoResult.text)")
+            print("Length: \(echoResult.length)")
+        }
+    } catch {
+        print("Error: \(error)")
+    }
+}
+
+// Random function (async)
+Task {
+    let number = await random()
+    print("Random: \(number)")
+}
 ```
 
 ### Android (Kotlin/Java)
@@ -217,11 +234,23 @@ let number = random()  // returns a random Double between 0.0 and 1.0
 
 3. Use in Kotlin:
    ```kotlin
-   import template.*
+   import kotlinx.coroutines.launch
+   import uniffi.rust_multiplatform_template_lib.*
 
-   val result = helloWorld()  // returns true
-   val text = echo("Hello!")  // returns "Hello!"
-   val number = random()  // returns a Double between 0.0 and 1.0
+   // Echo function (async)
+   scope.launch {
+       val result = templateEcho("Hello!", null)
+       if (result != null) {
+           println("Text: ${result.text}")
+           println("Length: ${result.length}")
+       }
+   }
+
+   // Random function (async)
+   scope.launch {
+       val number = templateRandom()
+       println("Random: $number")
+   }
    ```
 
 ### JVM Desktop (Kotlin/Java)
@@ -235,10 +264,7 @@ rust-multiplatform-template-lib/
 ├── src/                          # Rust source code
 │   ├── lib.rs                    # Library entry point
 │   ├── template.rs               # Core Rust functions
-│   ├── uniffi_wrapper.rs         # UniFFI bindings wrapper
-│   ├── error.rs                  # Error types
-│   └── bin/
-│       └── uniffi-bindgen.rs     # UniFFI code generator
+│   └── template.udl              # UniFFI interface definition
 ├── tests/                        # Rust integration tests
 │   └── template_tests.rs         # Test suite
 ├── platforms/                    # Platform-specific bindings
@@ -257,7 +283,7 @@ rust-multiplatform-template-lib/
 │       └── settings.gradle.kts
 ├── apps/                         # Demo applications
 │   ├── apple/                    # iOS/macOS SwiftUI app
-│   │   ├── TemplateDemo.xcodeproj/   # Xcode project
+│   │   ├── DemoApp.xcodeproj/        # Xcode project
 │   │   ├── TemplateDemo/             # Source files
 │   │   └── README.md
 │   ├── android/                  # Android Compose app

@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.9.20"
-    id("com.android.library") version "8.1.4"
+    kotlin("multiplatform") version "1.9.25"
+    id("com.android.library") version "8.7.3"
     id("org.jetbrains.dokka") version "1.9.20"
     id("maven-publish")
 }
@@ -35,20 +35,25 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation("net.java.dev.jna:jna:5.13.0@aar")
+                implementation("net.java.dev.jna:jna:5.15.0@aar")
             }
         }
         val jvmMain by getting {
             dependencies {
-                implementation("net.java.dev.jna:jna:5.13.0")
+                implementation("net.java.dev.jna:jna:5.15.0")
             }
             resources.srcDirs("src/jvmMain/kotlin")
         }
@@ -67,9 +72,9 @@ tasks.named<Jar>("jvmJar") {
 
 android {
     namespace = "com.template"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

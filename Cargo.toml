@@ -13,7 +13,9 @@ keywords = ["ffi", "uniffi", "multiplatform", "ios", "android", "template"]
 categories = ["api-bindings", "development-tools::ffi"]
 
 [lib]
-crate-type = ["rlib", "cdylib", "staticlib"]
+name = "rust_multiplatform_template_lib"
+path = "src/lib.rs"
+crate-type = ["cdylib", "staticlib", "rlib"]
 
 [[bin]]
 name = "uniffi-bindgen"
@@ -26,8 +28,14 @@ rand = "0.9"
 # Error handling
 thiserror = "2.0"
 
+# Async runtime for async operations
+tokio = { version = "1.42", features = ["rt", "macros"] }
+
 # UniFFI for Swift/Kotlin bindings
 uniffi = { version = "0.30", features = ["cli"] }
 
 [build-dependencies]
 uniffi = { version = "0.30", features = ["build"] }
+
+[dev-dependencies]
+tokio-test = "0.4"

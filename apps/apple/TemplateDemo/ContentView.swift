@@ -2,7 +2,6 @@ import SwiftUI
 import Template
 
 struct ContentView: View {
-    @State private var helloWorldResult: String = "Not called yet"
     @State private var echoInput: String = "Hello from Swift!"
     @State private var echoResult: String = "Not called yet"
     @State private var randomResult: String = "Not called yet"
@@ -13,10 +12,6 @@ struct ContentView: View {
         ScrollView {
             VStack(spacing: 30) {
                 headerSection
-
-                Divider()
-
-                helloWorldSection
 
                 Divider()
 
@@ -58,41 +53,14 @@ struct ContentView: View {
         .padding(.top)
     }
 
-    // MARK: - Hello World Section
-
-    private var helloWorldSection: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            Text("1. Hello World")
-                .font(.headline)
-
-            Text("Tests a simple boolean return from Rust")
-                .font(.caption)
-                .foregroundColor(.secondary)
-
-            Button(action: callHelloWorld) {
-                Label("Call helloWorld()", systemImage: "globe")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-
-            ResultBox(title: "Result", content: helloWorldResult)
-        }
-        .padding()
-        .background(Color.blue.opacity(0.1))
-        .cornerRadius(10)
-    }
-
     // MARK: - Echo Section
 
     private var echoSection: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("2. Echo")
+            Text("1. Echo")
                 .font(.headline)
 
-            Text("Returns the input string, or nil if empty")
+            Text("Returns the input string with metadata, or nil if empty")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -120,7 +88,7 @@ struct ContentView: View {
 
     private var randomSection: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("3. Random Number")
+            Text("2. Random Number")
                 .font(.headline)
 
             Text("Generates a random number between 0.0 and 1.0")
@@ -145,27 +113,31 @@ struct ContentView: View {
 
     // MARK: - Function Calls
 
-    private func callHelloWorld() {
-        helloWorldResult = "\(helloWorld())"
-    }
-
     private func callEcho() {
-        do {
-            let result = try echo(input: echoInput)
-            if let text = result {
-                echoResult = text
-            } else {
-                echoResult = "nil (empty input)"
+        Task {
+            do {
+                let result = try await echo(input: echoInput, token: nil)
+                if let echoResult = result {
+                    self.echoResult = """
+                    Text: \(echoResult.text)
+                    Length: \(echoResult.length)
+                    Timestamp: \(echoResult.timestamp)
+                    """
+                } else {
+                    self.echoResult = "nil (empty input)"
+                }
+            } catch {
+                handleError(error)
+                self.echoResult = "Error occurred: \(error.localizedDescription)"
             }
-        } catch {
-            handleError(error)
-            echoResult = "Error occurred: \(error.localizedDescription)"
         }
     }
 
     private func callRandom() {
-        let result = random()
-        randomResult = String(format: "%.6f", result)
+        Task {
+            let result = await random()
+            self.randomResult = String(format: "%.6f", result)
+        }
     }
 
     private func handleError(_ error: Error) {

@@ -21,7 +21,7 @@ sourcekitten_sourcefile:
 custom_categories:
   - name: Functions
     children:
-      - hello_world()
+      
       - echo(input:)
       - random()
   - name: Errors

@@ -1,20 +1,17 @@
 package dev.eaceto.templatedemo
 
-import uniffi.rust_multiplatform_template_lib.*
+import kotlinx.coroutines.runBlocking
+import uniffi.Template.*
 
-fun main() {
+fun main() = runBlocking {
     printHeader()
     println()
 
-    // Test 1: Hello World
-    testHelloWorld()
-    println()
-
-    // Test 2: Echo
+    // Test 1: Echo
     testEcho()
     println()
 
-    // Test 3: Random
+    // Test 2: Random
     testRandom()
     println()
 
@@ -34,31 +31,11 @@ fun printFooter() {
     println("=" .repeat(60))
 }
 
-fun testHelloWorld() {
+suspend fun testEcho() {
     println("-" .repeat(60))
-    println("[TEST 1/3] Hello World")
+    println("[TEST 1/2] Echo")
     println("-" .repeat(60))
-    println("Description: Tests a simple boolean return from Rust")
-    println()
-
-    try {
-        print("Calling helloWorld()... ")
-        val result = helloWorld()
-        println("[SUCCESS]")
-        println("Result: $result")
-        println("Type: ${result::class.simpleName}")
-    } catch (e: Exception) {
-        println("[FAILED]")
-        println("Error: ${e.message}")
-        e.printStackTrace()
-    }
-}
-
-fun testEcho() {
-    println("-" .repeat(60))
-    println("[TEST 2/3] Echo")
-    println("-" .repeat(60))
-    println("Description: Returns the input string, or null if empty")
+    println("Description: Returns the input string with metadata, or null if empty")
     println()
 
     val testInputs = listOf(
@@ -73,11 +50,13 @@ fun testEcho() {
             val displayInput = if (input.isEmpty()) "(empty string)" else "\"$input\""
             print("  [${index + 1}/${testInputs.size}] Calling echo($displayInput)... ")
 
-            val result = echo(input)
+            val result = echo(input, null)
 
             if (result != null) {
                 println("[SUCCESS]")
-                println("      Result: \"$result\"")
+                println("      Text: \"${result.text}\"")
+                println("      Length: ${result.length}")
+                println("      Timestamp: ${result.timestamp}")
             } else {
                 println("[SUCCESS]")
                 println("      Result: null (as expected for empty input)")
@@ -90,9 +69,9 @@ fun testEcho() {
     }
 }
 
-fun testRandom() {
+suspend fun testRandom() {
     println("-" .repeat(60))
-    println("[TEST 3/3] Random Number Generator")
+    println("[TEST 2/2] Random Number Generator")
     println("-" .repeat(60))
     println("Description: Generates random numbers between 0.0 and 1.0")
     println()

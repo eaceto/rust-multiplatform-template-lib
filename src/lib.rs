@@ -6,11 +6,16 @@
 //! This template uses UniFFI to generate language bindings for Swift and Kotlin,
 //! allowing seamless integration with native mobile and desktop applications.
 //!
-//! ## Functions
+//! ## Functions (All Async)
 //!
-//! - `hello_world()`: Returns a boolean true value
-//! - `echo(input)`: Returns the input string, or None if empty (with size validation)
-//! - `random()`: Returns a random double between 0.0 and 1.0
+//! - `echo(input, token)`: Returns the input string with metadata, or None if empty (async with cancellation)
+//! - `random()`: Returns a random double between 0.0 and 1.0 (async)
+//!
+//! ## Types
+//!
+//! - `EchoResult`: Rich result type with text, length, timestamp, and hash
+//! - `TemplateConfig`: Configuration object for template operations
+//! - `CancellationToken`: Token for cancelling async operations
 //!
 //! ## Error Handling
 //!
@@ -20,12 +25,9 @@
 mod error;
 mod template;
 
-// UniFFI bindings module (for Swift/Kotlin)
-mod uniffi_wrapper;
-
 // Export the public API
-pub use crate::error::{TemplateError, TemplateResult, MAX_INPUT_SIZE};
-pub use crate::template::{echo, hello_world, random};
+pub use crate::error::{TemplateError, TemplateResult, DEFAULT_MAX_SIZE, MAX_INPUT_SIZE};
+pub use crate::template::{echo, random, CancellationToken, EchoResult, TemplateConfig};
 
-// Setup UniFFI scaffolding at crate root
-uniffi::setup_scaffolding!();
+// Include the UDL file for UniFFI
+uniffi::include_scaffolding!("template");

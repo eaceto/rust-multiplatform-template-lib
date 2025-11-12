@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["MAX_INPUT_SIZE"],"enum":["TemplateError"],"fn":["echo","hello_world","random"],"type":["TemplateResult"]};
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_MAX_SIZE","MAX_INPUT_SIZE"],"enum":["TemplateError"],"fn":["echo","random"],"struct":["CancellationToken","EchoResult","TemplateConfig"],"type":["TemplateResult"]};

@@ -1,12 +1,16 @@
 # Swift Package Manager
 .build/
 .swiftpm/
-*.xcodeproj
 DerivedData/
 
-# Xcode
+# Xcode user-specific files (ignore these)
 xcuserdata/
-*.xcworkspace
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# We want to track the project structure (project.pbxproj)
+# But ignore user-specific workspace settings
+*.xcworkspace/contents.xcworkspacedata
 
 # macOS
 .DS_Store

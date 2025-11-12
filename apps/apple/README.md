@@ -4,11 +4,10 @@ A simple iOS/macOS SwiftUI application demonstrating the Rust Multiplatform Temp
 
 ## Features
 
-This demo app showcases all three functions from the template library:
+This demo app showcases the async functions from the template library:
 
-1. **Hello World** - Simple boolean return value
-2. **Echo** - String input/output with optional handling
-3. **Random** - Random number generation using Rust's rand crate
+1. **Echo** - String input/output with metadata and cancellation support
+2. **Random** - Random number generation using Rust's rand crate
 
 ## Quick Start
 
@@ -26,7 +25,7 @@ cd apps/apple
 
 1. **Open the Xcode project:**
    ```bash
-   open TemplateDemo.xcodeproj
+   open DemoApp.xcodeproj
    ```
 
 2. **Select your target:**

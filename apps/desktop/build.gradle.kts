@@ -7,6 +7,7 @@ group = "dev.eaceto"
 version = "1.0.0"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -16,6 +17,9 @@ dependencies {
 
     // Kotlin stdlib
     implementation(kotlin("stdlib"))
+
+    // Coroutines for async support
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
 
 application {

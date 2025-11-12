@@ -1,0 +1,49 @@
+// UniFFI Interface Definition Language (UDL) file
+// This file defines the API exposed to Swift and Kotlin
+
+namespace Template {
+    // Echo function with rich return type (async)
+    [Throws=TemplateError, Async]
+    EchoResult? echo(string input, CancellationToken? token);
+
+    // Random number generation (async)
+    [Async]
+    double random();
+};
+
+// Configuration object with state
+interface TemplateConfig {
+    // Constructor
+    constructor(u64 max_input_size, boolean enable_validation);
+
+    // Getters
+    u64 max_input_size();
+    boolean enable_validation();
+
+    // Validate input with this config (async)
+    [Throws=TemplateError, Async]
+    EchoResult? validate_and_echo(string input, CancellationToken? token);
+};
+
+// Cancellation token for async operations
+interface CancellationToken {
+    constructor();
+    void cancel();
+    boolean is_cancelled();
+};
+
+// Rich return type for echo operations
+dictionary EchoResult {
+    string text;
+    u32 length;
+    u64 timestamp;
+    string? hash;
+};
+
+// Error types - using flat error for simplicity and compatibility
+[Error]
+interface TemplateError {
+    InputTooLarge(u64 size, u64 max, string hash);
+    InvalidInput(string error_message, string? input_preview);
+    OperationCancelled(string operation);
+};

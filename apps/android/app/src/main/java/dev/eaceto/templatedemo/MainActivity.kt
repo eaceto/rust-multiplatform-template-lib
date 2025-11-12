@@ -15,7 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import uniffi.rust_multiplatform_template_lib.*
+import kotlinx.coroutines.launch
+import com.rust.template.extensions.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,12 +37,12 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemplateDemoApp() {
-    var helloWorldResult by remember { mutableStateOf("Not called yet") }
     var echoInput by remember { mutableStateOf("Hello from Kotlin!") }
     var echoResult by remember { mutableStateOf("Not called yet") }
     var randomResult by remember { mutableStateOf("Not called yet") }
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -67,40 +68,30 @@ fun TemplateDemoApp() {
 
             Divider()
 
-            // Hello World Section
-            HelloWorldSection(
-                result = helloWorldResult,
-                onCallClick = {
-                    try {
-                        val result = helloWorld()
-                        helloWorldResult = "[SUCCESS] $result"
-                    } catch (e: Exception) {
-                        errorMessage = e.message ?: "Unknown error"
-                        showError = true
-                        helloWorldResult = "[ERROR] See error message"
-                    }
-                }
-            )
-
-            Divider()
-
             // Echo Section
             EchoSection(
                 input = echoInput,
                 result = echoResult,
                 onInputChange = { echoInput = it },
                 onCallClick = {
-                    try {
-                        val result = echo(echoInput)
-                        echoResult = if (result != null) {
-                            "[SUCCESS] \"$result\""
-                        } else {
-                            "[WARNING] null (empty input)"
+                    scope.launch {
+                        try {
+                            val result = templateEcho(echoInput, null)
+                            echoResult = if (result != null) {
+                                """
+                                [SUCCESS]
+                                Text: ${result.text}
+                                Length: ${result.length}
+                                Timestamp: ${result.timestamp}
+                                """.trimIndent()
+                            } else {
+                                "[WARNING] null (empty input)"
+                            }
+                        } catch (e: Exception) {
+                            errorMessage = e.message ?: "Unknown error"
+                            showError = true
+                            echoResult = "[ERROR] See error message"
                         }
-                    } catch (e: Exception) {
-                        errorMessage = e.message ?: "Unknown error"
-                        showError = true
-                        echoResult = "[ERROR] See error message"
                     }
                 }
             )
@@ -111,13 +102,15 @@ fun TemplateDemoApp() {
             RandomSection(
                 result = randomResult,
                 onCallClick = {
-                    try {
-                        val result = random()
-                        randomResult = "[SUCCESS] ${"%.6f".format(result)}"
-                    } catch (e: Exception) {
-                        errorMessage = e.message ?: "Unknown error"
-                        showError = true
-                        randomResult = "[ERROR] See error message"
+                    scope.launch {
+                        try {
+                            val result = templateRandom()
+                            randomResult = "[SUCCESS] ${"%.6f".format(result)}"
+                        } catch (e: Exception) {
+                            errorMessage = e.message ?: "Unknown error"
+                            showError = true
+                            randomResult = "[ERROR] See error message"
+                        }
                     }
                 }
             )
@@ -165,20 +158,6 @@ fun HeaderSection() {
 }
 
 @Composable
-fun HelloWorldSection(result: String, onCallClick: () -> Unit) {
-    FunctionCard(
-        title = "1. Hello World",
-        description = "Tests a simple boolean return from Rust",
-        icon = Icons.Default.Public,
-        backgroundColor = Color(0xFFE3F2FD),
-        buttonColor = Color(0xFF2196F3),
-        buttonText = "Call helloWorld()",
-        result = result,
-        onCallClick = onCallClick
-    )
-}
-
-@Composable
 fun EchoSection(
     input: String,
     result: String,
@@ -203,14 +182,14 @@ fun EchoSection(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "2. Echo",
+                    text = "1. Echo",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
 
             Text(
-                text = "Returns the input string, or null if empty",
+                text = "Returns the input string with metadata, or null if empty",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -240,7 +219,7 @@ fun EchoSection(
 @Composable
 fun RandomSection(result: String, onCallClick: () -> Unit) {
     FunctionCard(
-        title = "3. Random Number",
+        title = "2. Random Number",
         description = "Generates a random number between 0.0 and 1.0",
         icon = Icons.Default.Casino,
         backgroundColor = Color(0xFFFFF3E0),

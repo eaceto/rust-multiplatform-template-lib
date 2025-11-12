@@ -45,18 +45,29 @@ cp target/aarch64-apple-darwin/release/librust_multiplatform_template_lib.a \
 
 # Generate Swift bindings
 echo "Generating Swift bindings..."
+# Clean old AUTO-GENERATED bindings first to avoid conflicts
+# IMPORTANT: Only remove auto-generated files, preserve manual files like TemplateExtensions.swift
+rm -f platforms/apple/Sources/Template/template.swift
+rm -f platforms/apple/Sources/Template/Template.swift
+rm -f platforms/apple/Sources/Template/templateFFI.h
+rm -f platforms/apple/Sources/Template/TemplateFFI.h
+rm -f platforms/apple/Sources/Template/templateFFI.modulemap
+rm -f platforms/apple/Sources/Template/TemplateFFI.modulemap
+rm -f platforms/apple/Sources/Template/module.modulemap
 mkdir -p platforms/apple/Sources/Template
+
+# Generate bindings from UDL file
 cargo run --bin uniffi-bindgen -- \
     generate \
-    --library target/aarch64-apple-darwin/release/librust_multiplatform_template_lib.dylib \
+    src/template.udl \
     --language swift \
     --out-dir platforms/apple/Sources/Template
 
 # Create module.modulemap for the C headers
 echo "Creating module.modulemap..."
 cat > platforms/apple/Sources/Template/module.modulemap << 'EOF'
-module rust_multiplatform_template_libFFI {
-    header "rust_multiplatform_template_libFFI.h"
+module TemplateFFI {
+    header "TemplateFFI.h"
     export *
 }
 EOF
@@ -76,7 +87,7 @@ echo "[SUCCESS] Build complete!"
 echo ""
 echo "Outputs:"
 echo "   - XCFramework: platforms/apple/xcframework/librust_multiplatform_template_lib.xcframework"
-echo "   - Swift bindings: platforms/apple/Sources/Template/template.swift"
+echo "   - Swift bindings: platforms/apple/Sources/Template/Template.swift"
 echo "   - Package manifest: platforms/apple/Package.swift"
 echo ""
 echo "Supported Platforms:"

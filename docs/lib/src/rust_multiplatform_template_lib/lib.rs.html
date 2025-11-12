@@ -6,26 +6,28 @@
 <a href=#6 id=6 data-nosnippet>6</a>//! This template uses UniFFI to generate language bindings for Swift and Kotlin,
 <a href=#7 id=7 data-nosnippet>7</a>//! allowing seamless integration with native mobile and desktop applications.
 <a href=#8 id=8 data-nosnippet>8</a>//!
-<a href=#9 id=9 data-nosnippet>9</a>//! ## Functions
+<a href=#9 id=9 data-nosnippet>9</a>//! ## Functions (All Async)
 <a href=#10 id=10 data-nosnippet>10</a>//!
-<a href=#11 id=11 data-nosnippet>11</a>//! - `hello_world()`: Returns a boolean true value
-<a href=#12 id=12 data-nosnippet>12</a>//! - `echo(input)`: Returns the input string, or None if empty (with size validation)
-<a href=#13 id=13 data-nosnippet>13</a>//! - `random()`: Returns a random double between 0.0 and 1.0
-<a href=#14 id=14 data-nosnippet>14</a>//!
-<a href=#15 id=15 data-nosnippet>15</a>//! ## Error Handling
-<a href=#16 id=16 data-nosnippet>16</a>//!
-<a href=#17 id=17 data-nosnippet>17</a>//! Functions that can fail return `Result&lt;T, TemplateError&gt;`. See the `error` module
-<a href=#18 id=18 data-nosnippet>18</a>//! for details on error types and handling.
-<a href=#19 id=19 data-nosnippet>19</a>
-<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">mod </span>error;
-<a href=#21 id=21 data-nosnippet>21</a><span class="kw">mod </span>template;
-<a href=#22 id=22 data-nosnippet>22</a>
-<a href=#23 id=23 data-nosnippet>23</a><span class="comment">// UniFFI bindings module (for Swift/Kotlin)
-<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">mod </span>uniffi_wrapper;
-<a href=#25 id=25 data-nosnippet>25</a>
-<a href=#26 id=26 data-nosnippet>26</a><span class="comment">// Export the public API
-<a href=#27 id=27 data-nosnippet>27</a></span><span class="kw">pub use </span><span class="kw">crate</span>::error::{TemplateError, TemplateResult, MAX_INPUT_SIZE};
-<a href=#28 id=28 data-nosnippet>28</a><span class="kw">pub use </span><span class="kw">crate</span>::template::{echo, hello_world, random};
-<a href=#29 id=29 data-nosnippet>29</a>
-<a href=#30 id=30 data-nosnippet>30</a><span class="comment">// Setup UniFFI scaffolding at crate root
-<a href=#31 id=31 data-nosnippet>31</a></span><span class="macro">uniffi::setup_scaffolding!</span>();</code></pre></div></section></main></body></html>
+<a href=#11 id=11 data-nosnippet>11</a>//! - `echo(input, token)`: Returns the input string with metadata, or None if empty (async with cancellation)
+<a href=#12 id=12 data-nosnippet>12</a>//! - `random()`: Returns a random double between 0.0 and 1.0 (async)
+<a href=#13 id=13 data-nosnippet>13</a>//!
+<a href=#14 id=14 data-nosnippet>14</a>//! ## Types
+<a href=#15 id=15 data-nosnippet>15</a>//!
+<a href=#16 id=16 data-nosnippet>16</a>//! - `EchoResult`: Rich result type with text, length, timestamp, and hash
+<a href=#17 id=17 data-nosnippet>17</a>//! - `TemplateConfig`: Configuration object for template operations
+<a href=#18 id=18 data-nosnippet>18</a>//! - `CancellationToken`: Token for cancelling async operations
+<a href=#19 id=19 data-nosnippet>19</a>//!
+<a href=#20 id=20 data-nosnippet>20</a>//! ## Error Handling
+<a href=#21 id=21 data-nosnippet>21</a>//!
+<a href=#22 id=22 data-nosnippet>22</a>//! Functions that can fail return `Result&lt;T, TemplateError&gt;`. See the `error` module
+<a href=#23 id=23 data-nosnippet>23</a>//! for details on error types and handling.
+<a href=#24 id=24 data-nosnippet>24</a>
+<a href=#25 id=25 data-nosnippet>25</a></span><span class="kw">mod </span>error;
+<a href=#26 id=26 data-nosnippet>26</a><span class="kw">mod </span>template;
+<a href=#27 id=27 data-nosnippet>27</a>
+<a href=#28 id=28 data-nosnippet>28</a><span class="comment">// Export the public API
+<a href=#29 id=29 data-nosnippet>29</a></span><span class="kw">pub use </span><span class="kw">crate</span>::error::{TemplateError, TemplateResult, DEFAULT_MAX_SIZE, MAX_INPUT_SIZE};
+<a href=#30 id=30 data-nosnippet>30</a><span class="kw">pub use </span><span class="kw">crate</span>::template::{echo, random, CancellationToken, EchoResult, TemplateConfig};
+<a href=#31 id=31 data-nosnippet>31</a>
+<a href=#32 id=32 data-nosnippet>32</a><span class="comment">// Include the UDL file for UniFFI
+<a href=#33 id=33 data-nosnippet>33</a></span><span class="macro">uniffi::include_scaffolding!</span>(<span class="string">"template"</span>);</code></pre></div></section></main></body></html>

@@ -4,21 +4,21 @@ A Material Design 3 Android app built with Jetpack Compose that demonstrates the
 
 ## Features
 
-This demo app showcases all three functions from the template library:
+This demo app showcases two functions from the template library:
 
-1. **Hello World** - Simple boolean return value
-2. **Echo** - String input/output with optional handling
-3. **Random** - Random number generation using Rust's rand crate
+1. **Echo** - String input with EchoResult return (text, length, timestamp)
+2. **Random** - Random number generation using Rust's rand crate
 
 ## Screenshots
 
 The app provides an interactive UI with:
 - **Material Design 3** color scheme
-- **Color-coded cards** for each function (blue, green, orange)
+- **Color-coded cards** for each function (green, orange)
 - **Interactive text input** field for echo testing
 - **Real-time result display** boxes
 - **Error handling** with Material dialogs
 - **Modern Compose UI** patterns
+- **Async/await with Kotlin coroutines**
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ The app provides an interactive UI with:
 ### Step 1: Build the Rust Library
 
 ```bash
-# From the project root
+# From the project root0
 ./scripts/build-kotlin.sh
 ```
 
@@ -123,7 +123,6 @@ Edit `app/src/main/AndroidManifest.xml`:
 ### Change Colors
 
 The app uses Material Design 3 theming. Color-coded sections are defined in `MainActivity.kt`:
-- Blue: `Color(0xFFE3F2FD)` / `Color(0xFF2196F3)`
 - Green: `Color(0xFFE8F5E9)` / `Color(0xFF4CAF50)`
 - Orange: `Color(0xFFFFF3E0)` / `Color(0xFFFF9800)`
 
@@ -184,35 +183,34 @@ If you modified the Rust code:
 
 ## Code Examples
 
-### Calling Hello World
+### Calling Echo (Async)
 
 ```kotlin
-import template.*
+import kotlinx.coroutines.launch
+import uniffi.rust_multiplatform_template_lib.*
 
-val result = helloWorld()
-println(result)  // true
-```
-
-### Calling Echo
-
-```kotlin
-import template.*
-
-val result = echo("Hello from Android!")
-if (result != null) {
-    println("Echo: $result")
-} else {
-    println("Empty input")
+scope.launch {
+    val result = templateEcho("Hello from Android!", null)
+    if (result != null) {
+        println("Text: ${result.text}")
+        println("Length: ${result.length}")
+        println("Timestamp: ${result.timestamp}")
+    } else {
+        println("Empty input")
+    }
 }
 ```
 
-### Calling Random
+### Calling Random (Async)
 
 ```kotlin
-import template.*
+import kotlinx.coroutines.launch
+import uniffi.rust_multiplatform_template_lib.*
 
-val number = random()
-println("Random: %.6f".format(number))
+scope.launch {
+    val number = templateRandom()
+    println("Random: %.6f".format(number))
+}
 ```
 
 ## Learn More

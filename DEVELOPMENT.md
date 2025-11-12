@@ -171,12 +171,12 @@ cargo test                      # Rust tests only
 Add integration tests in `tests/template_tests.rs`:
 
 ```rust
-use rust_multiplatform_template_lib::{hello_world, echo};
+use rust_multiplatform_template_lib::{random, echo};
 
 #[test]
 fn test_your_feature() {
-    assert!(hello_world());
-    let result = echo("test".to_string()).unwrap();
+    let result = tokio_test::block_on(async { random().await });
+    assert!(result >= 0.0 && result < 1.0);
     assert_eq!(result, Some("test".to_string()));
 }
 ```
@@ -187,8 +187,8 @@ Edit `platforms/apple/Tests/TemplateTests/TemplateTests.swift`:
 
 ```swift
 func testYourFeature() throws {
-    XCTAssertTrue(helloWorld())
-    let result = try echo(input: "test")
+    let result = try await random()
+    XCTAssertTrue(result >= 0.0 && result < 1.0)
     XCTAssertEqual(result, "test")
 }
 ```
@@ -200,8 +200,8 @@ Edit `platforms/kotlin/src/commonTest/kotlin/TemplateTest.kt`:
 ```kotlin
 @Test
 fun testYourFeature() {
-    assertTrue(helloWorld())
-    assertEquals("test", echo("test"))
+    val result = templateRandom()
+    assertTrue(result >= 0.0 && result < 1.0)
 }
 ```
 

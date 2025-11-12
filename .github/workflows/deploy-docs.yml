@@ -280,6 +280,7 @@ jobs:
                   <a href="DEVELOPMENT.html">🔧 Development</a>
                   <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
                   <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+                  <a href="KOTLIN_EXAMPLES.html">🤖 Kotlin Examples</a>
                   <a href="lib/index.html">📖 API Docs</a>
               </div>
               <div class="container">
@@ -288,13 +289,15 @@ jobs:
           </body>
           </html>'''
 
-          # Files to convert
+          # Files to convert (from docs_src/)
           files_to_convert = [
               ('README.md', 'Getting Started'),
               ('DEVELOPMENT.md', 'Development Guide'),
               ('CONTRIBUTING.md', 'Contributing Guide'),
-              ('docs/UDL_GUIDE.md', 'UniFFI UDL Guide'),
-              ('docs/SWIFT_EXAMPLES.md', 'Swift Examples'),
+              ('docs_src/UDL_GUIDE.md', 'UniFFI UDL Guide'),
+              ('docs_src/SWIFT_EXAMPLES.md', 'Swift Examples'),
+              ('docs_src/KOTLIN_EXAMPLES.md', 'Kotlin Examples'),
+              ('docs_src/TESTING.md', 'Testing Guide'),
           ]
 
           for md_file, title in files_to_convert:
@@ -316,11 +319,8 @@ jobs:
                       content=html_content
                   )
 
-                  # Determine output path
-                  if md_file.startswith('docs/'):
-                      output_file = md_file.replace('.md', '.html')
-                  else:
-                      output_file = f'docs/{os.path.basename(md_file).replace(".md", ".html")}'
+                  # Determine output path - all go to docs/
+                  output_file = f'docs/{os.path.basename(md_file).replace(".md", ".html")}'
 
                   # Write HTML file
                   with open(output_file, 'w', encoding='utf-8') as f:

@@ -305,6 +305,14 @@ rust-multiplatform-template-lib/
 │   ├── test-kotlin.sh            # Test script for Android/JVM
 │   ├── doc-all.sh                # Generate documentation
 │   └── setup.sh                  # Install Rust targets
+├── docs_src/                     # Documentation source (markdown)
+│   ├── UDL_GUIDE.md              # UniFFI interface guide
+│   ├── SWIFT_EXAMPLES.md         # Swift usage examples
+│   ├── KOTLIN_EXAMPLES.md        # Kotlin usage examples
+│   └── TESTING.md                # Testing guide
+├── docs/                         # Generated documentation (HTML)
+│   ├── *.html                    # HTML from markdown (auto-generated)
+│   └── lib/                      # Rust API docs (from cargo doc)
 ├── Cargo.toml                    # Rust package manifest
 ├── DEVELOPMENT.md                # Development guide
 ├── CONTRIBUTING.md               # Contributing guidelines
@@ -357,6 +365,11 @@ cd platforms/kotlin
 
 ## Documentation
 
+The project documentation is organized into two directories:
+
+- **`docs_src/`** - Source markdown files (edit these)
+- **`docs/`** - Generated HTML documentation (auto-generated, published to GitHub Pages)
+
 ### Generate Documentation for All Platforms
 
 ```bash
@@ -373,16 +386,31 @@ After running `./scripts/doc-all.sh`, open the generated HTML files in your brow
 open docs/lib/index.html
 ```
 
+Or start a local web server:
+```bash
+cd docs && python3 -m http.server 8000
+# Then open: http://localhost:8000/
+```
+
+### Adding Documentation
+
+1. Add markdown files to `docs_src/` for platform-specific guides
+2. Root-level documentation (`README.md`, `DEVELOPMENT.md`, `CONTRIBUTING.md`) stays in project root
+3. CI/CD automatically converts markdown to HTML and publishes to GitHub Pages
+
 ### Publishing Documentation
 
-To publish to GitHub Pages:
+Documentation is automatically published to GitHub Pages when you push to `main`:
 ```bash
-git add docs/
+git add docs/ docs_src/
 git commit -m "Update documentation"
 git push
 ```
 
-Then enable GitHub Pages in your repository settings, pointing to the `docs/` folder.
+The GitHub Actions workflow handles:
+- Converting markdown → HTML
+- Generating Rust API docs
+- Deploying to `gh-pages` branch
 
 ## Development
 

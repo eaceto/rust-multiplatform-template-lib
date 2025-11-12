@@ -115,6 +115,8 @@ apps/desktop/app/build/
 .claude
 
 # ============================
-# Documentation (keep docs/ for GitHub Pages)
+# Documentation
 # ============================
-# docs/ is intentionally NOT ignored - it's published to GitHub Pages
+# docs_src/ contains source markdown files (tracked in git)
+# docs/ contains generated HTML for GitHub Pages (tracked in git)
+# Both directories are intentionally NOT ignored

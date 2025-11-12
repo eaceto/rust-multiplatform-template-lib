@@ -2,6 +2,8 @@
 
 A template project for creating Rust libraries that can be embedded in multiple platforms using UniFFI for automatic binding generation.
 
+> **📝 Using this as a template?** Run `./scripts/run_me_first.sh` to customize all project names!
+
 ## Table of Contents
 
 - [What is This?](#what-is-this)
@@ -55,6 +57,29 @@ This template includes two async example functions:
 
 ## Quick Start
 
+### For Template Users (First Time)
+
+If you're using this repository as a GitHub template, **start here**:
+
+```bash
+# 1. Clone the template
+git clone https://github.com/yourusername/rust-multiplatform-template-lib.git my-project
+cd my-project
+
+# 2. Run the initialization script (interactive)
+./scripts/run_me_first.sh
+
+# This will guide you through:
+# - Setting your Rust crate name
+# - Setting your Swift module name
+# - Setting your Java/Kotlin package name
+# - Updating all ~50+ files in the project
+# - Updating demo applications
+# - Cleaning build artifacts
+```
+
+**That's it!** Your project is now customized with your names.
+
 ### Prerequisites
 
 - **Rust** - Install from [rustup.rs](https://rustup.rs/)
@@ -64,7 +89,7 @@ This template includes two async example functions:
   - Create `platforms/kotlin/local.properties` with `sdk.dir` path
   - See [platforms/kotlin/README.md](platforms/kotlin/README.md) for setup details
 
-### Setup
+### Setup (After Initialization)
 
 ```bash
 # Install required Rust targets

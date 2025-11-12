@@ -117,6 +117,13 @@ apps/desktop/app/build/
 # ============================
 # Documentation
 # ============================
-# docs_src/ contains source markdown files (tracked in git)
-# docs/ contains generated HTML for GitHub Pages (tracked in git)
-# Both directories are intentionally NOT ignored
+# docs_src/ - Source markdown files (TRACKED - edit these)
+# docs/*.html - Generated HTML for GitHub Pages (TRACKED - small files)
+# docs/lib/ - Generated Rust API docs (IGNORED - large, fully auto-generated)
+
+# Ignore generated Rust API documentation (2.9MB, 144 files)
+/docs/lib/
+
+# Keep the rest of docs/ for GitHub Pages
+# - docs/*.html files are small and useful for direct GitHub Pages serving
+# - docs/index.html is the main landing page

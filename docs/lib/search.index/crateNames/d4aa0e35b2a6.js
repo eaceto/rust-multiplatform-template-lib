@@ -1,1 +1,0 @@
-rd_("Aorust_multiplatform_template_libnuniffi_bindgen")

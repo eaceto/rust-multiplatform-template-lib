@@ -359,6 +359,14 @@ java<span class="w"> </span>-jar<span class="w"> </span>build/libs/template-demo
 <span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">kotlin</span><span class="p">.</span><span class="nx">sh</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span>
 <span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">doc</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Generate</span><span class="w"> </span><span class="nx">documentation</span>
 <span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">setup</span><span class="p">.</span><span class="nx">sh</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Install</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">targets</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">docs_src</span><span class="o">/</span><span class="w">                     </span><span class="err">#</span><span class="w"> </span><span class="nx">Documentation</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="p">(</span><span class="nx">markdown</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">UDL_GUIDE</span><span class="p">.</span><span class="nx">md</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">UniFFI</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">guide</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">SWIFT_EXAMPLES</span><span class="p">.</span><span class="nx">md</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">usage</span><span class="w"> </span><span class="nx">examples</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">KOTLIN_EXAMPLES</span><span class="p">.</span><span class="nx">md</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">usage</span><span class="w"> </span><span class="nx">examples</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">TESTING</span><span class="p">.</span><span class="nx">md</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Testing</span><span class="w"> </span><span class="nx">guide</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">docs</span><span class="o">/</span><span class="w">                         </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">documentation</span><span class="w"> </span><span class="p">(</span><span class="nx">HTML</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="nx">html</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">HTML</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">markdown</span><span class="w"> </span><span class="p">(</span><span class="kt">auto</span><span class="o">-</span><span class="nx">generated</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">lib</span><span class="o">/</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="nx">docs</span><span class="w"> </span><span class="p">(</span><span class="nx">from</span><span class="w"> </span><span class="nx">cargo</span><span class="w"> </span><span class="nx">doc</span><span class="p">)</span>
 <span class="err">├──</span><span class="w"> </span><span class="nx">Cargo</span><span class="p">.</span><span class="nx">toml</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nx">manifest</span>
 <span class="err">├──</span><span class="w"> </span><span class="nx">DEVELOPMENT</span><span class="p">.</span><span class="nx">md</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Development</span><span class="w"> </span><span class="nx">guide</span>
 <span class="err">├──</span><span class="w"> </span><span class="nx">CONTRIBUTING</span><span class="p">.</span><span class="nx">md</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Contributing</span><span class="w"> </span><span class="nx">guidelines</span>
@@ -399,6 +407,11 @@ swift<span class="w"> </span><span class="nb">test</span>
 </code></pre></div>
 
 <h2 id="documentation">Documentation</h2>
+<p>The project documentation is organized into two directories:</p>
+<ul>
+<li><strong><code>docs_src/</code></strong> - Source markdown files (edit these)</li>
+<li><strong><code>docs/</code></strong> - Generated HTML documentation (auto-generated, published to GitHub Pages)</li>
+</ul>
 <h3 id="generate-documentation-for-all-platforms">Generate Documentation for All Platforms</h3>
 <div class="codehilite"><pre><span></span><code>./scripts/doc-all.sh
 </code></pre></div>
@@ -410,14 +423,28 @@ swift<span class="w"> </span><span class="nb">test</span>
 <div class="codehilite"><pre><span></span><code>open<span class="w"> </span>docs/lib/index.html
 </code></pre></div>
 
+<p>Or start a local web server:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<span class="c1"># Then open: http://localhost:8000/</span>
+</code></pre></div>
+
+<h3 id="adding-documentation">Adding Documentation</h3>
+<ol>
+<li>Add markdown files to <code>docs_src/</code> for platform-specific guides</li>
+<li>Root-level documentation (<code>README.md</code>, <code>DEVELOPMENT.md</code>, <code>CONTRIBUTING.md</code>) stays in project root</li>
+<li>CI/CD automatically converts markdown to HTML and publishes to GitHub Pages</li>
+</ol>
 <h3 id="publishing-documentation">Publishing Documentation</h3>
-<p>To publish to GitHub Pages:</p>
-<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>docs/
+<p>Documentation is automatically published to GitHub Pages when you push to <code>main</code>:</p>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>docs/<span class="w"> </span>docs_src/
 git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update documentation&quot;</span>
 git<span class="w"> </span>push
 </code></pre></div>
 
-<p>Then enable GitHub Pages in your repository settings, pointing to the <code>docs/</code> folder.</p>
+<p>The GitHub Actions workflow handles:
+- Converting markdown → HTML
+- Generating Rust API docs
+- Deploying to <code>gh-pages</code> branch</p>
 <h2 id="development">Development</h2>
 <p>For contributors and maintainers, see <a href="DEVELOPMENT.md">DEVELOPMENT.md</a> for detailed instructions on:</p>
 <ul>

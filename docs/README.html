@@ -93,6 +93,9 @@
     <div class="container">
         <h1 id="rust-multiplatform-template-library">Rust Multiplatform Template Library</h1>
 <p>A template project for creating Rust libraries that can be embedded in multiple platforms using UniFFI for automatic binding generation.</p>
+<blockquote>
+<p><strong>📝 Using this as a template?</strong> Run <code>./scripts/run_me_first.sh</code> to customize all project names!</p>
+</blockquote>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#what-is-this">What is This?</a></li>
@@ -142,6 +145,25 @@
 <li><strong><code>random()</code></strong> → Returns a random number between 0.0 and 1.0 (demonstrates async functions and working with dependencies)</li>
 </ul>
 <h2 id="quick-start">Quick Start</h2>
+<h3 id="for-template-users-first-time">For Template Users (First Time)</h3>
+<p>If you're using this repository as a GitHub template, <strong>start here</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Clone the template</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/rust-multiplatform-template-lib.git<span class="w"> </span>my-project
+<span class="nb">cd</span><span class="w"> </span>my-project
+
+<span class="c1"># 2. Run the initialization script (interactive)</span>
+./scripts/run_me_first.sh
+
+<span class="c1"># This will guide you through:</span>
+<span class="c1"># - Setting your Rust crate name</span>
+<span class="c1"># - Setting your Swift module name</span>
+<span class="c1"># - Setting your Java/Kotlin package name</span>
+<span class="c1"># - Updating all ~50+ files in the project</span>
+<span class="c1"># - Updating demo applications</span>
+<span class="c1"># - Cleaning build artifacts</span>
+</code></pre></div>
+
+<p><strong>That's it!</strong> Your project is now customized with your names.</p>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
 <li><strong>Rust</strong> - Install from <a href="https://rustup.rs/">rustup.rs</a></li>
@@ -151,7 +173,7 @@
 <li>Create <code>platforms/kotlin/local.properties</code> with <code>sdk.dir</code> path</li>
 <li>See <a href="platforms/kotlin/README.md">platforms/kotlin/README.md</a> for setup details</li>
 </ul>
-<h3 id="setup">Setup</h3>
+<h3 id="setup-after-initialization">Setup (After Initialization)</h3>
 <div class="codehilite"><pre><span></span><code><span class="c1"># Install required Rust targets</span>
 ./scripts/setup.sh
 

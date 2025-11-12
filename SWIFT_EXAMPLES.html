@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift Examples - Rust Multiplatform Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 { color: #004e89; }
+        h1 { border-bottom: 3px solid #ff6b35; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #1a659e; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1a659e;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        a { color: #1a659e; text-decoration: none; }
+        a:hover { color: #ff6b35; text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #004e89;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        blockquote {
+            border-left: 4px solid #ff6b35;
+            padding-left: 20px;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        .nav {
+            background: #004e89;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="README.html">📋 README</a>
+        <a href="DEVELOPMENT.html">🔧 Development</a>
+        <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
+        <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+        <a href="KOTLIN_EXAMPLES.html">🤖 Kotlin Examples</a>
+        <a href="lib/index.html">📖 API Docs</a>
+    </div>
+    <div class="container">
+        <h1 id="swift-usage-examples">Swift Usage Examples</h1>
+<p>This document shows how to use the Rust template library in Swift/iOS applications with all the new improvements.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+<li><a href="#async-operations">Async Operations</a></li>
+<li><a href="#cancellation">Cancellation</a></li>
+<li><a href="#configuration-objects">Configuration Objects</a></li>
+<li><a href="#complete-example-app">Complete Example App</a></li>
+</ul>
+<hr />
+<h2 id="basic-usage">Basic Usage</h2>
+<h3 id="echo-with-rich-return-type">Echo with Rich Return Type</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">func</span> <span class="nf">basicExample</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">echoResult</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="s">&quot;Hello, Swift!&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Text: </span><span class="si">\(</span><span class="n">echoResult</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Length: </span><span class="si">\(</span><span class="n">echoResult</span><span class="p">.</span><span class="n">length</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Timestamp: </span><span class="si">\(</span><span class="n">echoResult</span><span class="p">.</span><span class="n">timestamp</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">hash</span> <span class="p">=</span> <span class="n">echoResult</span><span class="p">.</span><span class="n">hash</span> <span class="p">{</span>
+                <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Hash: </span><span class="si">\(</span><span class="n">hash</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Empty input returned nil&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Error: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="random-number-generation">Random Number Generation</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">func</span> <span class="nf">randomExample</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">randomValue</span> <span class="p">=</span> <span class="k">await</span> <span class="n">random</span><span class="p">()</span>
+    <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Random: </span><span class="si">\(</span><span class="n">randomValue</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>  <span class="c1">// 0.0 to 1.0</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="structured-error-handling">Structured Error Handling</h3>
+<p>The new error system provides structured error information instead of just strings:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">func</span> <span class="nf">processInput</span><span class="p">(</span><span class="kc">_</span> <span class="n">input</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">)</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Success: </span><span class="si">\(</span><span class="n">result</span><span class="p">?.</span><span class="n">text</span> <span class="p">??</span> <span class="s">&quot;nil&quot;</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">hash</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Input too large!&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;  Size: </span><span class="si">\(</span><span class="n">size</span><span class="si">)</span><span class="s"> bytes&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;  Maximum allowed: </span><span class="si">\(</span><span class="bp">max</span><span class="si">)</span><span class="s"> bytes&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;  Hash (for debugging): </span><span class="si">\(</span><span class="n">hash</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+
+            <span class="c1">// Show user-friendly message</span>
+            <span class="kd">let</span> <span class="nv">formatter</span> <span class="p">=</span> <span class="n">ByteCountFormatter</span><span class="p">()</span>
+            <span class="kd">let</span> <span class="nv">sizeStr</span> <span class="p">=</span> <span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="p">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+            <span class="kd">let</span> <span class="nv">maxStr</span> <span class="p">=</span> <span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="p">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="p">(</span><span class="bp">max</span><span class="p">))</span>
+            <span class="n">showAlert</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s">&quot;Input Too Large&quot;</span><span class="p">,</span>
+                     <span class="n">message</span><span class="p">:</span> <span class="s">&quot;Your input (</span><span class="si">\(</span><span class="n">sizeStr</span><span class="si">)</span><span class="s">) exceeds the maximum size of </span><span class="si">\(</span><span class="n">maxStr</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">preview</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Invalid input: </span><span class="si">\(</span><span class="n">message</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">preview</span> <span class="p">=</span> <span class="n">preview</span> <span class="p">{</span>
+                <span class="bp">print</span><span class="p">(</span><span class="s">&quot;  Preview: </span><span class="si">\(</span><span class="n">preview</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">showAlert</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s">&quot;Invalid Input&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Operation cancelled: </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">showAlert</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s">&quot;Cancelled&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="s">&quot;The operation was cancelled&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Unexpected error: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">showAlert</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Your alert implementation</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="practical-error-handling-example">Practical Error Handling Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">UIKit</span>
+<span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">class</span> <span class="nc">InputViewController</span><span class="p">:</span> <span class="bp">UIViewController</span> <span class="p">{</span>
+    <span class="kr">@IBOutlet</span> <span class="kr">weak</span> <span class="kd">var</span> <span class="nv">textField</span><span class="p">:</span> <span class="bp">UITextField</span><span class="p">!</span>
+    <span class="kr">@IBOutlet</span> <span class="kr">weak</span> <span class="kd">var</span> <span class="nv">resultLabel</span><span class="p">:</span> <span class="bp">UILabel</span><span class="p">!</span>
+
+    <span class="kr">@IBAction</span> <span class="kd">func</span> <span class="nf">processButtonTapped</span><span class="p">(</span><span class="kc">_</span> <span class="n">sender</span><span class="p">:</span> <span class="bp">UIButton</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="kd">let</span> <span class="nv">input</span> <span class="p">=</span> <span class="n">textField</span><span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="o">!</span><span class="n">input</span><span class="p">.</span><span class="bp">isEmpty</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;Please enter some text&quot;</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                Result: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span>
+<span class="s">                Length: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">length</span><span class="si">)</span><span class="s"> characters</span>
+<span class="s">                Time: </span><span class="si">\(</span><span class="n">Date</span><span class="si">(</span><span class="n">timeIntervalSince1970</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="si">(</span><span class="n">result</span><span class="p">.</span><span class="n">timestamp</span><span class="si">)))</span>
+<span class="s">                &quot;&quot;&quot;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="n">handleTemplateError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+            <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;Unexpected error: </span><span class="si">\(</span><span class="n">error</span><span class="p">.</span><span class="n">localizedDescription</span><span class="si">)</span><span class="s">&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">handleTemplateError</span><span class="p">(</span><span class="kc">_</span> <span class="n">error</span><span class="p">:</span> <span class="n">TemplateError</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+            <span class="kd">let</span> <span class="nv">formatter</span> <span class="p">=</span> <span class="n">ByteCountFormatter</span><span class="p">()</span>
+            <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            ❌ Input too large</span>
+<span class="s">            Your input: </span><span class="si">\(</span><span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="n">size</span><span class="si">)))</span>
+<span class="s">            Maximum: </span><span class="si">\(</span><span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="bp">max</span><span class="si">)))</span>
+<span class="s">            &quot;&quot;&quot;</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">preview</span><span class="p">):</span>
+            <span class="kd">var</span> <span class="nv">text</span> <span class="p">=</span> <span class="s">&quot;❌ Invalid input: </span><span class="si">\(</span><span class="n">message</span><span class="si">)</span><span class="s">&quot;</span>
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">preview</span> <span class="p">=</span> <span class="n">preview</span> <span class="p">{</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Preview: </span><span class="si">\(</span><span class="n">preview</span><span class="si">)</span><span class="s">&quot;</span>
+            <span class="p">}</span>
+            <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="n">text</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">):</span>
+            <span class="n">resultLabel</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;⚠️ </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s"> was cancelled&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="async-operations">Async Operations</h2>
+<h3 id="basic-async-echo">Basic Async Echo</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">func</span> <span class="nf">asyncExample</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echoAsync</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="s">&quot;Async hello!&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Async result: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Completed at: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">timestamp</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Cancelled: </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Too large: </span><span class="si">\(</span><span class="n">size</span><span class="si">)</span><span class="s"> &gt; </span><span class="si">\(</span><span class="bp">max</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Invalid: </span><span class="si">\(</span><span class="n">message</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Error: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="using-with-swiftui">Using with SwiftUI</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">SwiftUI</span>
+<span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">struct</span> <span class="nc">AsyncEchoView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">input</span> <span class="p">=</span> <span class="s">&quot;&quot;</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">result</span><span class="p">:</span> <span class="n">EchoResult</span><span class="p">?</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">isLoading</span> <span class="p">=</span> <span class="kc">false</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">error</span><span class="p">:</span> <span class="n">TemplateError</span><span class="p">?</span>
+
+    <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+        <span class="n">VStack</span><span class="p">(</span><span class="n">spacing</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Enter text&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="err">$</span><span class="n">input</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">textFieldStyle</span><span class="p">(.</span><span class="n">roundedBorder</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+
+            <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Process Async&quot;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">Task</span> <span class="p">{</span>
+                    <span class="k">await</span> <span class="n">processAsync</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="p">.</span><span class="n">disabled</span><span class="p">(</span><span class="n">isLoading</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">isLoading</span> <span class="p">{</span>
+                <span class="n">ProgressView</span><span class="p">()</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+                <span class="n">VStack</span><span class="p">(</span><span class="n">alignment</span><span class="p">:</span> <span class="p">.</span><span class="n">leading</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Result: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+                    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Length: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">length</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+                    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Time: </span><span class="si">\(</span><span class="n">Date</span><span class="si">(</span><span class="n">timeIntervalSince1970</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="si">(</span><span class="n">result</span><span class="p">.</span><span class="n">timestamp</span><span class="si">)))</span><span class="s">&quot;</span><span class="p">)</span>
+                <span class="p">}</span>
+                <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">green</span><span class="p">.</span><span class="n">opacity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span>
+                <span class="p">.</span><span class="n">cornerRadius</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">error</span> <span class="p">=</span> <span class="n">error</span> <span class="p">{</span>
+                <span class="n">ErrorView</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">error</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">processAsync</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+        <span class="n">isLoading</span> <span class="p">=</span> <span class="kc">true</span>
+        <span class="n">error</span> <span class="p">=</span> <span class="kc">nil</span>
+        <span class="n">result</span> <span class="p">=</span> <span class="kc">nil</span>
+
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="n">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echoAsync</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">templateError</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="n">error</span> <span class="p">=</span> <span class="n">templateError</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Unexpected error: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">isLoading</span> <span class="p">=</span> <span class="kc">false</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="nc">ErrorView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">error</span><span class="p">:</span> <span class="n">TemplateError</span>
+
+    <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+        <span class="n">VStack</span><span class="p">(</span><span class="n">alignment</span><span class="p">:</span> <span class="p">.</span><span class="n">leading</span><span class="p">,</span> <span class="n">spacing</span><span class="p">:</span> <span class="mi">8</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;❌ Input Too Large&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">font</span><span class="p">(.</span><span class="n">headline</span><span class="p">)</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Size: </span><span class="si">\(</span><span class="n">ByteCountFormatter</span><span class="si">()</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="n">size</span><span class="si">)))</span><span class="s">&quot;</span><span class="p">)</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Max: </span><span class="si">\(</span><span class="n">ByteCountFormatter</span><span class="si">()</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="bp">max</span><span class="si">)))</span><span class="s">&quot;</span><span class="p">)</span>
+
+            <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">preview</span><span class="p">):</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;❌ Invalid Input&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">font</span><span class="p">(.</span><span class="n">headline</span><span class="p">)</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">if</span> <span class="kd">let</span> <span class="nv">preview</span> <span class="p">=</span> <span class="n">preview</span> <span class="p">{</span>
+                    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Preview: </span><span class="si">\(</span><span class="n">preview</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">font</span><span class="p">(.</span><span class="n">caption</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">secondary</span><span class="p">)</span>
+                <span class="p">}</span>
+
+            <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">):</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;⚠️ Cancelled&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">font</span><span class="p">(.</span><span class="n">headline</span><span class="p">)</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Operation: </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">red</span><span class="p">.</span><span class="n">opacity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">cornerRadius</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="cancellation">Cancellation</h2>
+<h3 id="basic-cancellation">Basic Cancellation</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">func</span> <span class="nf">cancellableOperation</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">cancellationToken</span> <span class="p">=</span> <span class="n">CancellationToken</span><span class="p">()</span>
+
+    <span class="c1">// Start async operation</span>
+    <span class="n">Task</span> <span class="p">{</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echoAsync</span><span class="p">(</span>
+                <span class="n">input</span><span class="p">:</span> <span class="s">&quot;Long running operation&quot;</span><span class="p">,</span>
+                <span class="n">token</span><span class="p">:</span> <span class="n">cancellationToken</span>
+            <span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Completed: </span><span class="si">\(</span><span class="n">result</span><span class="p">?.</span><span class="n">text</span> <span class="p">??</span> <span class="s">&quot;nil&quot;</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">)</span> <span class="p">=</span> <span class="n">error</span> <span class="p">{</span>
+                <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Successfully cancelled: </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Cancel after 1 second</span>
+    <span class="n">Task</span> <span class="p">{</span>
+        <span class="k">try</span><span class="p">?</span> <span class="k">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">nanoseconds</span><span class="p">:</span> <span class="mi">1_000_000_000</span><span class="p">)</span>
+        <span class="n">cancellationToken</span><span class="p">.</span><span class="n">cancel</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="cancellation-with-swiftui">Cancellation with SwiftUI</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">SwiftUI</span>
+<span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">struct</span> <span class="nc">CancellableView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">input</span> <span class="p">=</span> <span class="s">&quot;&quot;</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">result</span><span class="p">:</span> <span class="n">EchoResult</span><span class="p">?</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">isProcessing</span> <span class="p">=</span> <span class="kc">false</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">cancellationToken</span><span class="p">:</span> <span class="n">CancellationToken</span><span class="p">?</span>
+    <span class="p">@</span><span class="n">State</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">error</span><span class="p">:</span> <span class="nb">String</span><span class="p">?</span>
+
+    <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+        <span class="n">VStack</span><span class="p">(</span><span class="n">spacing</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Enter text&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="err">$</span><span class="n">input</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">textFieldStyle</span><span class="p">(.</span><span class="n">roundedBorder</span><span class="p">)</span>
+
+            <span class="n">HStack</span> <span class="p">{</span>
+                <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Start&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">Task</span> <span class="p">{</span>
+                        <span class="k">await</span> <span class="n">startProcessing</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="p">.</span><span class="n">disabled</span><span class="p">(</span><span class="n">isProcessing</span><span class="p">)</span>
+
+                <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Cancel&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">cancelProcessing</span><span class="p">()</span>
+                <span class="p">}</span>
+                <span class="p">.</span><span class="n">disabled</span><span class="p">(</span><span class="o">!</span><span class="n">isProcessing</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">red</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">isProcessing</span> <span class="p">{</span>
+                <span class="n">ProgressView</span><span class="p">(</span><span class="s">&quot;Processing...&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span><span class="s">&quot;Result: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+                    <span class="p">.</span><span class="n">background</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">green</span><span class="p">.</span><span class="n">opacity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+                    <span class="p">.</span><span class="n">cornerRadius</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">error</span> <span class="p">=</span> <span class="n">error</span> <span class="p">{</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">red</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="p">.</span><span class="n">padding</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">startProcessing</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+        <span class="n">isProcessing</span> <span class="p">=</span> <span class="kc">true</span>
+        <span class="n">error</span> <span class="p">=</span> <span class="kc">nil</span>
+        <span class="n">result</span> <span class="p">=</span> <span class="kc">nil</span>
+
+        <span class="c1">// Create new cancellation token</span>
+        <span class="n">cancellationToken</span> <span class="p">=</span> <span class="n">CancellationToken</span><span class="p">()</span>
+
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nv">processResult</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echoAsync</span><span class="p">(</span>
+                <span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">,</span>
+                <span class="n">token</span><span class="p">:</span> <span class="n">cancellationToken</span>
+            <span class="p">)</span>
+            <span class="n">result</span> <span class="p">=</span> <span class="n">processResult</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">templateError</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span> <span class="p">=</span> <span class="n">templateError</span> <span class="p">{</span>
+                <span class="n">error</span> <span class="p">=</span> <span class="s">&quot;Operation was cancelled&quot;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">error</span> <span class="p">=</span> <span class="s">&quot;Error: </span><span class="si">\(</span><span class="n">templateError</span><span class="si">)</span><span class="s">&quot;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+            <span class="n">error</span> <span class="p">=</span> <span class="s">&quot;Unexpected error: </span><span class="si">\(</span><span class="n">error</span><span class="p">.</span><span class="n">localizedDescription</span><span class="si">)</span><span class="s">&quot;</span>
+        <span class="p">}</span>
+
+        <span class="n">isProcessing</span> <span class="p">=</span> <span class="kc">false</span>
+        <span class="n">cancellationToken</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">cancelProcessing</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cancellationToken</span><span class="p">?.</span><span class="n">cancel</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="configuration-objects">Configuration Objects</h2>
+<h3 id="using-templateconfig">Using TemplateConfig</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="c1">// Create configuration with custom settings</span>
+<span class="kd">let</span> <span class="nv">config</span> <span class="p">=</span> <span class="n">TemplateConfig</span><span class="p">(</span>
+    <span class="n">maxInputSize</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>  <span class="c1">// 1KB limit</span>
+    <span class="n">enableValidation</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">)</span>
+
+<span class="bp">print</span><span class="p">(</span><span class="s">&quot;Max size: </span><span class="si">\(</span><span class="n">config</span><span class="p">.</span><span class="n">maxInputSize</span><span class="si">())</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="bp">print</span><span class="p">(</span><span class="s">&quot;Validation: </span><span class="si">\(</span><span class="n">config</span><span class="p">.</span><span class="n">enableValidation</span><span class="si">())</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="c1">// Use the config</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="n">config</span><span class="p">.</span><span class="n">validateAndEcho</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="s">&quot;test&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Validated: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+    <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Validation failed: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="configuration-manager-pattern">Configuration Manager Pattern</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="kd">class</span> <span class="nc">TemplateManager</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="kd">let</span> <span class="nv">standardConfig</span><span class="p">:</span> <span class="n">TemplateConfig</span>
+    <span class="kd">private</span> <span class="kd">let</span> <span class="nv">strictConfig</span><span class="p">:</span> <span class="n">TemplateConfig</span>
+
+    <span class="kd">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Standard configuration: 1MB, validation enabled</span>
+        <span class="n">standardConfig</span> <span class="p">=</span> <span class="n">TemplateConfig</span><span class="p">(</span>
+            <span class="n">maxInputSize</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+            <span class="n">enableValidation</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">)</span>
+
+        <span class="c1">// Strict configuration: 10KB, validation enabled</span>
+        <span class="n">strictConfig</span> <span class="p">=</span> <span class="n">TemplateConfig</span><span class="p">(</span>
+            <span class="n">maxInputSize</span><span class="p">:</span> <span class="mi">10_000</span><span class="p">,</span>
+            <span class="n">enableValidation</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">processWithStandardConfig</span><span class="p">(</span><span class="kc">_</span> <span class="n">input</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="n">EchoResult</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="n">standardConfig</span><span class="p">.</span><span class="n">validateAndEcho</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">processWithStrictConfig</span><span class="p">(</span><span class="kc">_</span> <span class="n">input</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="p">-&gt;</span> <span class="n">EchoResult</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="n">strictConfig</span><span class="p">.</span><span class="n">validateAndEcho</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">validateInput</span><span class="p">(</span><span class="kc">_</span> <span class="n">input</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">Bool</span> <span class="p">=</span> <span class="kc">false</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span> <span class="p">{</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nv">config</span> <span class="p">=</span> <span class="n">strict</span> <span class="p">?</span> <span class="n">strictConfig</span> <span class="p">:</span> <span class="n">standardConfig</span>
+            <span class="kc">_</span> <span class="p">=</span> <span class="k">try</span> <span class="n">config</span><span class="p">.</span><span class="n">validateAndEcho</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">true</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Usage</span>
+<span class="kd">let</span> <span class="nv">manager</span> <span class="p">=</span> <span class="n">TemplateManager</span><span class="p">()</span>
+
+<span class="k">do</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="n">manager</span><span class="p">.</span><span class="n">processWithStandardConfig</span><span class="p">(</span><span class="s">&quot;Hello&quot;</span><span class="p">)</span>
+    <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Processed: </span><span class="si">\(</span><span class="n">result</span><span class="p">?.</span><span class="n">text</span> <span class="p">??</span> <span class="s">&quot;nil&quot;</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Input </span><span class="si">\(</span><span class="n">size</span><span class="si">)</span><span class="s"> exceeds limit </span><span class="si">\(</span><span class="bp">max</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kc">_</span><span class="p">):</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Invalid: </span><span class="si">\(</span><span class="n">message</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">:</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Cancelled&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="complete-example-app">Complete Example App</h2>
+<p>Here's a complete SwiftUI app showcasing all features:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">SwiftUI</span>
+<span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="p">@</span><span class="n">main</span>
+<span class="kd">struct</span> <span class="nc">TemplateApp</span><span class="p">:</span> <span class="n">App</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">Scene</span> <span class="p">{</span>
+        <span class="n">WindowGroup</span> <span class="p">{</span>
+            <span class="n">ContentView</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="nc">ContentView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+    <span class="p">@</span><span class="n">StateObject</span> <span class="kd">private</span> <span class="kd">var</span> <span class="nv">viewModel</span> <span class="p">=</span> <span class="n">TemplateViewModel</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+        <span class="n">NavigationView</span> <span class="p">{</span>
+            <span class="n">Form</span> <span class="p">{</span>
+                <span class="n">Section</span><span class="p">(</span><span class="s">&quot;Basic Operations&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Test Random&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">Task</span> <span class="p">{</span>
+                            <span class="k">await</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">testRandom</span><span class="p">()</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="n">Section</span><span class="p">(</span><span class="s">&quot;Echo&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">TextField</span><span class="p">(</span><span class="s">&quot;Input&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="err">$</span><span class="n">viewModel</span><span class="p">.</span><span class="n">input</span><span class="p">)</span>
+
+                    <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Echo&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">Task</span> <span class="p">{</span>
+                            <span class="k">await</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">echoAsync</span><span class="p">()</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="n">Section</span><span class="p">(</span><span class="s">&quot;Async with Cancellation&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Start Long Operation&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">Task</span> <span class="p">{</span>
+                            <span class="k">await</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">startLongOperation</span><span class="p">()</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                    <span class="p">.</span><span class="n">disabled</span><span class="p">(</span><span class="n">viewModel</span><span class="p">.</span><span class="n">isProcessing</span><span class="p">)</span>
+
+                    <span class="n">Button</span><span class="p">(</span><span class="s">&quot;Cancel&quot;</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">viewModel</span><span class="p">.</span><span class="n">cancelOperation</span><span class="p">()</span>
+                    <span class="p">}</span>
+                    <span class="p">.</span><span class="n">disabled</span><span class="p">(</span><span class="o">!</span><span class="n">viewModel</span><span class="p">.</span><span class="n">isProcessing</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">red</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">isProcessing</span> <span class="p">{</span>
+                        <span class="n">ProgressView</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+
+                <span class="n">Section</span><span class="p">(</span><span class="s">&quot;Result&quot;</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">lastResult</span> <span class="p">{</span>
+                        <span class="n">Text</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                            <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">green</span><span class="p">)</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="kd">let</span> <span class="nv">error</span> <span class="p">=</span> <span class="n">viewModel</span><span class="p">.</span><span class="n">lastError</span> <span class="p">{</span>
+                        <span class="n">Text</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                            <span class="p">.</span><span class="n">foregroundColor</span><span class="p">(.</span><span class="n">red</span><span class="p">)</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="p">.</span><span class="n">navigationTitle</span><span class="p">(</span><span class="s">&quot;Template Library&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">TemplateViewModel</span><span class="p">:</span> <span class="n">ObservableObject</span> <span class="p">{</span>
+    <span class="p">@</span><span class="n">Published</span> <span class="kd">var</span> <span class="nv">input</span> <span class="p">=</span> <span class="s">&quot;&quot;</span>
+    <span class="p">@</span><span class="n">Published</span> <span class="kd">var</span> <span class="nv">lastResult</span><span class="p">:</span> <span class="nb">String</span><span class="p">?</span>
+    <span class="p">@</span><span class="n">Published</span> <span class="kd">var</span> <span class="nv">lastError</span><span class="p">:</span> <span class="nb">String</span><span class="p">?</span>
+    <span class="p">@</span><span class="n">Published</span> <span class="kd">var</span> <span class="nv">isProcessing</span> <span class="p">=</span> <span class="kc">false</span>
+
+    <span class="kd">private</span> <span class="kd">var</span> <span class="nv">cancellationToken</span><span class="p">:</span> <span class="n">CancellationToken</span><span class="p">?</span>
+    <span class="kd">private</span> <span class="kd">let</span> <span class="nv">config</span> <span class="p">=</span> <span class="n">TemplateConfig</span><span class="p">(</span><span class="n">maxInputSize</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="n">enableValidation</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+
+    <span class="kd">func</span> <span class="nf">testRandom</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nv">value</span> <span class="p">=</span> <span class="k">await</span> <span class="n">random</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+            <span class="n">lastResult</span> <span class="p">=</span> <span class="s">&quot;Random: </span><span class="si">\(</span><span class="nb">String</span><span class="si">(</span><span class="n">format</span><span class="p">:</span> <span class="s">&quot;%.6f&quot;</span><span class="p">,</span> <span class="n">value</span><span class="si">))</span><span class="s">&quot;</span>
+            <span class="n">lastError</span> <span class="p">=</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">echoAsync</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="n">input</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                    <span class="n">lastResult</span> <span class="p">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                    Text: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span>
+<span class="s">                    Length: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">length</span><span class="si">)</span>
+<span class="s">                    Timestamp: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">timestamp</span><span class="si">)</span>
+<span class="s">                    &quot;&quot;&quot;</span>
+                    <span class="n">lastError</span> <span class="p">=</span> <span class="kc">nil</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                    <span class="n">lastResult</span> <span class="p">=</span> <span class="s">&quot;Empty input&quot;</span>
+                    <span class="n">lastError</span> <span class="p">=</span> <span class="kc">nil</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                <span class="n">lastError</span> <span class="p">=</span> <span class="n">formatError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">lastResult</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+            <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                <span class="n">lastError</span> <span class="p">=</span> <span class="s">&quot;Unexpected error: </span><span class="si">\(</span><span class="n">error</span><span class="p">.</span><span class="n">localizedDescription</span><span class="si">)</span><span class="s">&quot;</span>
+                <span class="n">lastResult</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">startLongOperation</span><span class="p">()</span> <span class="k">async</span> <span class="p">{</span>
+        <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+            <span class="n">isProcessing</span> <span class="p">=</span> <span class="kc">true</span>
+            <span class="n">lastError</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="n">lastResult</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="n">cancellationToken</span> <span class="p">=</span> <span class="n">CancellationToken</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echo</span><span class="p">(</span>
+                <span class="n">input</span><span class="p">:</span> <span class="s">&quot;Long operation: </span><span class="si">\(</span><span class="n">input</span><span class="si">)</span><span class="s">&quot;</span><span class="p">,</span>
+                <span class="n">token</span><span class="p">:</span> <span class="n">cancellationToken</span>
+            <span class="p">)</span>
+
+            <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+                    <span class="n">lastResult</span> <span class="p">=</span> <span class="s">&quot;Completed: </span><span class="si">\(</span><span class="n">result</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span>
+                <span class="p">}</span>
+                <span class="n">isProcessing</span> <span class="p">=</span> <span class="kc">false</span>
+                <span class="n">cancellationToken</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="kd">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="n">TemplateError</span> <span class="p">{</span>
+            <span class="k">await</span> <span class="n">MainActor</span><span class="p">.</span><span class="n">run</span> <span class="p">{</span>
+                <span class="n">lastError</span> <span class="p">=</span> <span class="n">formatError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">isProcessing</span> <span class="p">=</span> <span class="kc">false</span>
+                <span class="n">cancellationToken</span> <span class="p">=</span> <span class="kc">nil</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">cancelOperation</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cancellationToken</span><span class="p">?.</span><span class="n">cancel</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">formatError</span><span class="p">(</span><span class="kc">_</span> <span class="n">error</span><span class="p">:</span> <span class="n">TemplateError</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">String</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="p">.</span><span class="n">InputTooLarge</span><span class="p">(</span><span class="kd">let</span> <span class="nv">size</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">max</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">hash</span><span class="p">):</span>
+            <span class="kd">let</span> <span class="nv">formatter</span> <span class="p">=</span> <span class="n">ByteCountFormatter</span><span class="p">()</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            Input too large:</span>
+<span class="s">            Size: </span><span class="si">\(</span><span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="n">size</span><span class="si">)))</span>
+<span class="s">            Max: </span><span class="si">\(</span><span class="n">formatter</span><span class="p">.</span><span class="n">string</span><span class="si">(</span><span class="n">fromByteCount</span><span class="p">:</span> <span class="nb">Int64</span><span class="si">(</span><span class="bp">max</span><span class="si">)))</span>
+<span class="s">            Hash: </span><span class="si">\(</span><span class="n">hash</span><span class="si">)</span>
+<span class="s">            &quot;&quot;&quot;</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">InvalidInput</span><span class="p">(</span><span class="kd">let</span> <span class="nv">message</span><span class="p">,</span> <span class="kd">let</span> <span class="nv">preview</span><span class="p">):</span>
+            <span class="kd">var</span> <span class="nv">text</span> <span class="p">=</span> <span class="s">&quot;Invalid input: </span><span class="si">\(</span><span class="n">message</span><span class="si">)</span><span class="s">&quot;</span>
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">preview</span> <span class="p">=</span> <span class="n">preview</span> <span class="p">{</span>
+                <span class="n">text</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Preview: </span><span class="si">\(</span><span class="n">preview</span><span class="si">)</span><span class="s">&quot;</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">text</span>
+
+        <span class="k">case</span> <span class="p">.</span><span class="n">OperationCancelled</span><span class="p">(</span><span class="kd">let</span> <span class="nv">operation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">&quot;Cancelled: </span><span class="si">\(</span><span class="n">operation</span><span class="si">)</span><span class="s">&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Always handle errors explicitly</strong> - Don't just catch and ignore</li>
+<li><strong>Use structured error matching</strong> - Pattern match on error variants for better UX</li>
+<li><strong>Cancel long operations</strong> - Implement cancellation for better user experience</li>
+<li><strong>Use configuration objects</strong> - For reusable validation settings</li>
+<li><strong>Update UI on main thread</strong> - When using async operations in SwiftUI</li>
+</ol>
+<hr />
+<p><em>Last updated: 2025-01-11</em></p>
+    </div>
+</body>
+</html>

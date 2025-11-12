@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contributing Guide - Rust Multiplatform Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 { color: #004e89; }
+        h1 { border-bottom: 3px solid #ff6b35; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #1a659e; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1a659e;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        a { color: #1a659e; text-decoration: none; }
+        a:hover { color: #ff6b35; text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #004e89;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        blockquote {
+            border-left: 4px solid #ff6b35;
+            padding-left: 20px;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        .nav {
+            background: #004e89;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="README.html">📋 README</a>
+        <a href="DEVELOPMENT.html">🔧 Development</a>
+        <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
+        <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+        <a href="KOTLIN_EXAMPLES.html">🤖 Kotlin Examples</a>
+        <a href="lib/index.html">📖 API Docs</a>
+    </div>
+    <div class="container">
+        <h1 id="contributing-to-rust-multiplatform-template-library">Contributing to Rust Multiplatform Template Library</h1>
+<p>Thank you for your interest in contributing to this project! We welcome contributions from everyone.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#how-can-i-contribute">How Can I Contribute?</a></li>
+<li><a href="#development-setup">Development Setup</a></li>
+<li><a href="#pull-request-process">Pull Request Process</a></li>
+<li><a href="#coding-standards">Coding Standards</a></li>
+<li><a href="#commit-message-guidelines">Commit Message Guidelines</a></li>
+<li><a href="#getting-help">Getting Help</a></li>
+</ul>
+<h2 id="how-can-i-contribute">How Can I Contribute?</h2>
+<h3 id="reporting-bugs">Reporting Bugs</h3>
+<p>Before creating bug reports, please check the existing issues to avoid duplicates. When creating a bug report, include:</p>
+<ul>
+<li><strong>Clear title and description</strong></li>
+<li><strong>Steps to reproduce</strong> the issue</li>
+<li><strong>Expected behavior</strong> vs <strong>actual behavior</strong></li>
+<li><strong>Environment details</strong> (OS, Rust version, platform)</li>
+<li><strong>Code samples</strong> or test cases if applicable</li>
+</ul>
+<h3 id="suggesting-enhancements">Suggesting Enhancements</h3>
+<p>Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, include:</p>
+<ul>
+<li><strong>Clear title and description</strong> of the enhancement</li>
+<li><strong>Use cases</strong> and why this enhancement would be useful</li>
+<li><strong>Possible implementation</strong> approach (if you have ideas)</li>
+</ul>
+<h3 id="pull-requests">Pull Requests</h3>
+<p>We actively welcome your pull requests:</p>
+<ol>
+<li>Fork the repo and create your branch from <code>main</code></li>
+<li>Add tests for any new functionality</li>
+<li>Ensure the test suite passes (<code>./scripts/test-all.sh</code>)</li>
+<li>Update documentation as needed</li>
+<li>Follow the coding standards below</li>
+<li>Submit your pull request!</li>
+</ol>
+<h2 id="development-setup">Development Setup</h2>
+<p>See <a href="DEVELOPMENT.md">DEVELOPMENT.md</a> for detailed setup instructions. Quick start:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Install Rust targets</span>
+./scripts/setup.sh
+
+<span class="c1"># Build all platforms</span>
+./scripts/build-all.sh
+
+<span class="c1"># Run tests</span>
+./scripts/test-all.sh
+</code></pre></div>
+
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Rust</strong> (stable) - Install from <a href="https://rustup.rs/">rustup.rs</a></li>
+<li><strong>Xcode</strong> (for iOS/macOS)</li>
+<li><strong>Android NDK</strong> (for Android)</li>
+</ul>
+<h2 id="pull-request-process">Pull Request Process</h2>
+<ol>
+<li><strong>Update documentation</strong> - If you change APIs, update the relevant docs</li>
+<li><strong>Add tests</strong> - All new functionality should have tests</li>
+<li><strong>Run the full test suite</strong> - <code>./scripts/test-all.sh</code> must pass</li>
+<li><strong>Format your code</strong> - Run <code>cargo fmt</code> before committing</li>
+<li><strong>Check for issues</strong> - Run <code>cargo clippy</code> and fix any warnings</li>
+<li><strong>Update CHANGELOG.md</strong> - Add a note about your changes under "Unreleased"</li>
+<li><strong>Descriptive PR title</strong> - Use present tense ("Add feature" not "Added feature")</li>
+<li><strong>Reference issues</strong> - Link related issues in the PR description</li>
+</ol>
+<h3 id="review-process">Review Process</h3>
+<ul>
+<li>At least one maintainer must approve the PR</li>
+<li>All CI checks must pass</li>
+<li>Changes may be requested before merging</li>
+<li>Once approved, a maintainer will merge your PR</li>
+</ul>
+<h2 id="coding-standards">Coding Standards</h2>
+<h3 id="rust-code">Rust Code</h3>
+<ul>
+<li>Follow the <a href="https://rust-lang.github.io/api-guidelines/">Rust API Guidelines</a></li>
+<li>Use <code>cargo fmt</code> for formatting (adheres to rustfmt defaults)</li>
+<li>Use <code>cargo clippy</code> and address all warnings</li>
+<li>Write idiomatic Rust code</li>
+<li>Add doc comments (<code>///</code>) for all public APIs</li>
+<li>Include examples in doc comments where helpful</li>
+</ul>
+<h3 id="example-of-good-documentation">Example of Good Documentation</h3>
+<div class="codehilite"><pre><span></span><code><span class="sd">/// Processes the input string and returns a modified version.</span>
+<span class="sd">///</span>
+<span class="sd">/// # Arguments</span>
+<span class="sd">///</span>
+<span class="sd">/// * `input` - The string to process</span>
+<span class="sd">///</span>
+<span class="sd">/// # Returns</span>
+<span class="sd">///</span>
+<span class="sd">/// Returns `Some(String)` if the input is non-empty, `None` otherwise.</span>
+<span class="sd">///</span>
+<span class="sd">/// # Examples</span>
+<span class="sd">///</span>
+<span class="sd">/// ```</span>
+<span class="sd">/// use rust_multiplatform_template_lib::echo;</span>
+<span class="sd">///</span>
+<span class="sd">/// let result = echo(&quot;hello&quot;.to_string()).unwrap();</span>
+<span class="sd">/// assert_eq!(result, Some(&quot;hello&quot;.to_string()));</span>
+<span class="sd">/// ```</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">echo</span><span class="p">(</span><span class="n">input</span>: <span class="nb">String</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Option</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">TemplateError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// implementation</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="tests">Tests</h3>
+<ul>
+<li>Unit tests should be in the same file as the code they test</li>
+<li>Integration tests go in the <code>tests/</code> directory</li>
+<li>Test all edge cases and error conditions</li>
+<li>Use descriptive test names: <code>test_echo_returns_none_for_empty_string</code></li>
+</ul>
+<h3 id="shell-scripts">Shell Scripts</h3>
+<ul>
+<li>Use <code>#!/bin/bash</code> and <code>set -e</code> for error handling</li>
+<li>Add descriptive comments</li>
+<li>Follow existing script style in <code>scripts/</code> directory</li>
+</ul>
+<h2 id="commit-message-guidelines">Commit Message Guidelines</h2>
+<p>We follow conventional commit format:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">&lt;</span><span class="k">type</span><span class="p">&gt;(&lt;</span><span class="nx">scope</span><span class="p">&gt;):</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">subject</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nx">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nx">footer</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3 id="types">Types</h3>
+<ul>
+<li><code>feat</code>: New feature</li>
+<li><code>fix</code>: Bug fix</li>
+<li><code>docs</code>: Documentation only changes</li>
+<li><code>style</code>: Code style changes (formatting, missing semi-colons, etc.)</li>
+<li><code>refactor</code>: Code change that neither fixes a bug nor adds a feature</li>
+<li><code>perf</code>: Performance improvements</li>
+<li><code>test</code>: Adding or updating tests</li>
+<li><code>chore</code>: Changes to build process, tools, or dependencies</li>
+</ul>
+<h3 id="examples">Examples</h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">feat</span><span class="p">(</span><span class="nx">android</span><span class="p">):</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">support</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">arm64</span><span class="o">-</span><span class="nx">v8a</span><span class="w"> </span><span class="nx">architecture</span>
+
+<span class="nx">Added</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">configuration</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">targets</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">Android</span><span class="w"> </span><span class="nx">arm64</span><span class="o">-</span><span class="nx">v8a</span><span class="p">.</span>
+<span class="nx">This</span><span class="w"> </span><span class="nx">allows</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="kn">library</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">modern</span><span class="w"> </span><span class="mi">64</span><span class="o">-</span><span class="nx">bit</span><span class="w"> </span><span class="nx">Android</span><span class="w"> </span><span class="nx">devices</span><span class="p">.</span>
+
+<span class="nx">Closes</span><span class="w"> </span><span class="err">#</span><span class="mi">42</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>fix(ios): resolve memory leak in Swift bindings
+
+The Swift bindings were not properly releasing Rust objects,
+causing memory leaks in iOS applications.
+
+Fixes #38
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">docs</span><span class="o">:</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">README</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">Windows</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">instructions</span>
+
+<span class="n">Added</span><span class="w"> </span><span class="n">detailed</span><span class="w"> </span><span class="n">steps</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">building</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">Windows</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">MSVC</span><span class="w"> </span><span class="n">toolchain</span><span class="o">.</span>
+</code></pre></div>
+
+<h2 id="getting-help">Getting Help</h2>
+<ul>
+<li><strong>Documentation</strong>: Start with <a href="README.md">README.md</a> and <a href="DEVELOPMENT.md">DEVELOPMENT.md</a></li>
+<li><strong>Issues</strong>: Search <a href="https://github.com/eaceto/rust-multiplatform-template-lib/issues">existing issues</a></li>
+<li><strong>Discussions</strong>: Use <a href="https://github.com/eaceto/rust-multiplatform-template-lib/discussions">GitHub Discussions</a> for questions</li>
+<li><strong>Contact</strong>: Reach out to <a href="mailto:eaceto@pm.me">Ezequiel (Kimi) Aceto</a></li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<p>Understanding the project structure will help you contribute:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">code</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">lib</span><span class="p">.</span><span class="nx">rs</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Library</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="nx">point</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">rs</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Core</span><span class="w"> </span><span class="nx">implementation</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">uniffi_wrapper</span><span class="p">.</span><span class="nx">rs</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="nx">UniFFI</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">tests</span><span class="o">/</span><span class="w">                 </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">integration</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">platforms</span><span class="o">/</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">apple</span><span class="o">/</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="kn">package</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">kotlin</span><span class="o">/</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="kn">package</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">scripts</span><span class="o">/</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="p">,</span><span class="w"> </span><span class="nx">test</span><span class="p">,</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">documentation</span><span class="w"> </span><span class="nx">scripts</span>
+<span class="err">└──</span><span class="w"> </span><span class="nx">docs</span><span class="o">/</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">documentation</span>
+</code></pre></div>
+
+<h2 id="license">License</h2>
+<p>By contributing, you agree that your contributions will be licensed under the MIT License. See <a href="LICENSE">LICENSE</a> for details.</p>
+<hr />
+<p>Thank you for contributing! 🦀📱💻</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - Rust Multiplatform Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 { color: #004e89; }
+        h1 { border-bottom: 3px solid #ff6b35; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #1a659e; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1a659e;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        a { color: #1a659e; text-decoration: none; }
+        a:hover { color: #ff6b35; text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #004e89;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        blockquote {
+            border-left: 4px solid #ff6b35;
+            padding-left: 20px;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        .nav {
+            background: #004e89;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="README.html">📋 README</a>
+        <a href="DEVELOPMENT.html">🔧 Development</a>
+        <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
+        <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+        <a href="KOTLIN_EXAMPLES.html">🤖 Kotlin Examples</a>
+        <a href="lib/index.html">📖 API Docs</a>
+    </div>
+    <div class="container">
+        <h1 id="rust-multiplatform-template-library">Rust Multiplatform Template Library</h1>
+<p>A template project for creating Rust libraries that can be embedded in multiple platforms using UniFFI for automatic binding generation.</p>
+<blockquote>
+<p><strong>📝 Using this as a template?</strong> Run <code>./scripts/run_me_first.sh</code> to customize all project names!</p>
+</blockquote>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#what-is-this">What is This?</a></li>
+<li><a href="#template-functions">Template Functions</a></li>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#demo-applications">Demo Applications</a></li>
+<li><a href="#iosmacos-app">iOS/macOS App</a></li>
+<li><a href="#android-app">Android App</a></li>
+<li><a href="#desktop-cli-app">Desktop CLI App</a></li>
+<li><a href="#building">Building</a></li>
+<li><a href="#build-all-platforms">Build All Platforms</a></li>
+<li><a href="#build-specific-platforms">Build Specific Platforms</a></li>
+<li><a href="#using-the-generated-libraries">Using the Generated Libraries</a></li>
+<li><a href="#iosmacos-swift">iOS/macOS (Swift)</a></li>
+<li><a href="#android-kotlinjava">Android (Kotlin/Java)</a></li>
+<li><a href="#jvm-desktop-kotlinjava">JVM Desktop (Kotlin/Java)</a></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#test-all-platforms">Test All Platforms</a></li>
+<li><a href="#test-specific-platforms">Test Specific Platforms</a></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#generate-documentation-for-all-platforms">Generate Documentation for All Platforms</a></li>
+<li><a href="#view-documentation-locally">View Documentation Locally</a></li>
+<li><a href="#publishing-documentation">Publishing Documentation</a></li>
+<li><a href="#development">Development</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+<h2 id="what-is-this">What is This?</h2>
+<p>This template demonstrates how to write Rust code once and use it across:</p>
+<ul>
+<li><strong>iOS</strong> (arm64 devices)</li>
+<li><strong>iOS Simulator</strong> (arm64 M1+ and x86_64 Intel)</li>
+<li><strong>macOS</strong> (arm64 Apple Silicon)</li>
+<li><strong>Android</strong> (arm64-v8a, armeabi-v7a, x86, x86_64)</li>
+<li><strong>JVM</strong> (Desktop applications in Java/Kotlin)</li>
+</ul>
+<p>The template uses <a href="https://mozilla.github.io/uniffi-rs/">UniFFI</a> to automatically generate Swift and Kotlin bindings from your Rust code.</p>
+<h2 id="template-functions">Template Functions</h2>
+<p>This template includes two async example functions:</p>
+<ul>
+<li><strong><code>echo(input, token)</code></strong> → Returns an EchoResult with text, length, and timestamp, or <code>null</code>/<code>nil</code> if empty (demonstrates optional returns, structured data, and cancellation)</li>
+<li><strong><code>random()</code></strong> → Returns a random number between 0.0 and 1.0 (demonstrates async functions and working with dependencies)</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="for-template-users-first-time">For Template Users (First Time)</h3>
+<p>If you're using this repository as a GitHub template, <strong>start here</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Clone the template</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yourusername/rust-multiplatform-template-lib.git<span class="w"> </span>my-project
+<span class="nb">cd</span><span class="w"> </span>my-project
+
+<span class="c1"># 2. Run the initialization script (interactive)</span>
+./scripts/run_me_first.sh
+
+<span class="c1"># This will guide you through:</span>
+<span class="c1"># - Setting your Rust crate name</span>
+<span class="c1"># - Setting your Swift module name</span>
+<span class="c1"># - Setting your Java/Kotlin package name</span>
+<span class="c1"># - Updating all ~50+ files in the project</span>
+<span class="c1"># - Updating demo applications</span>
+<span class="c1"># - Cleaning build artifacts</span>
+</code></pre></div>
+
+<p><strong>That's it!</strong> Your project is now customized with your names.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Rust</strong> - Install from <a href="https://rustup.rs/">rustup.rs</a></li>
+<li><strong>Xcode</strong> (for iOS/macOS) - Required for Apple platforms</li>
+<li><strong>Android SDK &amp; NDK</strong> (for Android/JVM) - Required for Kotlin multiplatform builds</li>
+<li>Set <code>ANDROID_HOME</code> environment variable, or</li>
+<li>Create <code>platforms/kotlin/local.properties</code> with <code>sdk.dir</code> path</li>
+<li>See <a href="platforms/kotlin/README.md">platforms/kotlin/README.md</a> for setup details</li>
+</ul>
+<h3 id="setup-after-initialization">Setup (After Initialization)</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Install required Rust targets</span>
+./scripts/setup.sh
+
+<span class="c1"># Build for all platforms</span>
+./scripts/build-all.sh
+</code></pre></div>
+
+<p>That's it! The library is now built for iOS, macOS, Android, and JVM.</p>
+<h2 id="demo-applications">Demo Applications</h2>
+<p>This template includes three complete demo applications that show how to use the Rust library:</p>
+<h3 id="iosmacos-app">iOS/macOS App</h3>
+<p>A SwiftUI app for iOS 14+ and macOS 11+ with interactive UI.</p>
+<p><strong>Location:</strong> <code>apps/apple/</code></p>
+<p><strong>Run:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Build the library</span>
+./scripts/build-apple.sh
+
+<span class="c1"># 2. Open in Xcode</span>
+<span class="nb">cd</span><span class="w"> </span>apps/apple
+open<span class="w"> </span>DemoApp.xcodeproj
+
+<span class="c1"># 3. Select iPhone simulator or My Mac, then press Cmd+R</span>
+</code></pre></div>
+
+<p><strong>Features:</strong>
+- Color-coded sections for each function
+- Text input field for echo testing
+- Real-time result display with EchoResult metadata
+- Error handling with alerts
+- Async/await with Swift concurrency</p>
+<h3 id="android-app">Android App</h3>
+<p>A Jetpack Compose app for Android 5.0+ (API 21+).</p>
+<p><strong>Location:</strong> <code>apps/android/</code></p>
+<p><strong>Run:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Build the Kotlin library</span>
+./scripts/build-kotlin.sh
+
+<span class="c1"># 2. Build the AAR (Android Archive)</span>
+<span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+./gradlew<span class="w"> </span>assembleRelease
+<span class="nb">cd</span><span class="w"> </span>../..
+
+<span class="c1"># 3. Open in Android Studio</span>
+<span class="c1"># File -&gt; Open -&gt; Select apps/android/</span>
+
+<span class="c1"># 4. Run on emulator or device</span>
+</code></pre></div>
+
+<p><strong>Features:</strong>
+- Material Design 3 with Jetpack Compose
+- Color-coded cards for each function
+- Interactive text input
+- Modern Android UI patterns
+- Coroutines for async operations</p>
+<h3 id="desktop-cli-app">Desktop CLI App</h3>
+<p>A command-line JVM application that runs on macOS, Linux, and Windows.</p>
+<p><strong>Location:</strong> <code>apps/desktop/</code></p>
+<p><strong>Run:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># 1. Build the Kotlin library and publish to Maven Local</span>
+<span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+./gradlew<span class="w"> </span>publishToMavenLocal
+<span class="nb">cd</span><span class="w"> </span>../..
+
+<span class="c1"># 2. Run the desktop app</span>
+<span class="nb">cd</span><span class="w"> </span>apps/desktop
+./gradlew<span class="w"> </span>run
+
+<span class="c1"># Or build a standalone JAR</span>
+./gradlew<span class="w"> </span>jar
+java<span class="w"> </span>-jar<span class="w"> </span>build/libs/template-demo-desktop-1.0.0.jar
+</code></pre></div>
+
+<p><strong>Features:</strong>
+- Automated testing of both functions
+- Detailed output with statistics
+- Portable JAR file
+- No GUI dependencies
+- Async support with Kotlin coroutines</p>
+<h2 id="building">Building</h2>
+<h3 id="build-all-platforms">Build All Platforms</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/build-all.sh
+</code></pre></div>
+
+<p>This will build for all supported platforms (Apple, Android, JVM).</p>
+<h3 id="build-specific-platforms">Build Specific Platforms</h3>
+<p><strong>Apple platforms (iOS + macOS):</strong></p>
+<div class="codehilite"><pre><span></span><code>./scripts/build-apple.sh
+</code></pre></div>
+
+<p><strong>Android + JVM:</strong></p>
+<div class="codehilite"><pre><span></span><code>./scripts/build-kotlin.sh
+</code></pre></div>
+
+<h2 id="using-the-generated-libraries">Using the Generated Libraries</h2>
+<h3 id="iosmacos-swift">iOS/macOS (Swift)</h3>
+<ol>
+<li>In Xcode: <strong>File → Add Package Dependencies</strong></li>
+<li>Click <strong>Add Local</strong> and select the <code>platforms/apple</code> directory</li>
+<li>Add the <code>Template</code> package to your target</li>
+<li>Import and use in Swift:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">Template</span>
+
+<span class="c1">// Echo function (async)</span>
+<span class="n">Task</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="s">&quot;Hello!&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">echoResult</span> <span class="p">=</span> <span class="n">result</span> <span class="p">{</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Text: </span><span class="si">\(</span><span class="n">echoResult</span><span class="p">.</span><span class="n">text</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Length: </span><span class="si">\(</span><span class="n">echoResult</span><span class="p">.</span><span class="n">length</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Error: </span><span class="si">\(</span><span class="n">error</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Random function (async)</span>
+<span class="n">Task</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">number</span> <span class="p">=</span> <span class="k">await</span> <span class="n">random</span><span class="p">()</span>
+    <span class="bp">print</span><span class="p">(</span><span class="s">&quot;Random: </span><span class="si">\(</span><span class="n">number</span><span class="si">)</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="android-kotlinjava">Android (Kotlin/Java)</h3>
+<ol>
+<li>
+<p>Build and publish to Maven Local:
+   <code>bash
+   cd platforms/kotlin
+   ./gradlew publishToMavenLocal</code></p>
+</li>
+<li>
+<p>Add to your app's <code>build.gradle.kts</code>:
+   <code>kotlin
+   dependencies {
+       implementation("com.template:template:0.1.0")
+   }</code></p>
+</li>
+<li>
+<p>Use in Kotlin:
+   ```kotlin
+   import kotlinx.coroutines.launch
+   import uniffi.rust_multiplatform_template_lib.*</p>
+</li>
+</ol>
+<p>// Echo function (async)
+   scope.launch {
+       val result = templateEcho("Hello!", null)
+       if (result != null) {
+           println("Text: ${result.text}")
+           println("Length: ${result.length}")
+       }
+   }</p>
+<p>// Random function (async)
+   scope.launch {
+       val number = templateRandom()
+       println("Random: $number")
+   }
+   ```</p>
+<h3 id="jvm-desktop-kotlinjava">JVM Desktop (Kotlin/Java)</h3>
+<p>Same as Android - the Kotlin Multiplatform setup supports both Android and JVM targets.</p>
+<h2 id="project-structure">Project Structure</h2>
+<div class="codehilite"><pre><span></span><code><span class="nx">rust</span><span class="o">-</span><span class="nx">multiplatform</span><span class="o">-</span><span class="nx">template</span><span class="o">-</span><span class="nx">lib</span><span class="o">/</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="w">                          </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="nx">code</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">lib</span><span class="p">.</span><span class="nx">rs</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Library</span><span class="w"> </span><span class="nx">entry</span><span class="w"> </span><span class="nx">point</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">rs</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Core</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">functions</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">udl</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">UniFFI</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">definition</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">tests</span><span class="o">/</span><span class="w">                        </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">integration</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">template_tests</span><span class="p">.</span><span class="nx">rs</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">suite</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">platforms</span><span class="o">/</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Platform</span><span class="o">-</span><span class="nx">specific</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">apple</span><span class="o">/</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="kn">package</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">Package</span><span class="p">.</span><span class="nx">swift</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">Package</span><span class="w"> </span><span class="nx">Manager</span><span class="w"> </span><span class="nx">manifest</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">Sources</span><span class="o">/</span><span class="nx">Template</span><span class="o">/</span><span class="w">     </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">Tests</span><span class="o">/</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">xcframework</span><span class="o">/</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="nx">Built</span><span class="w"> </span><span class="nx">XCFramework</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">kotlin</span><span class="o">/</span><span class="w">                   </span><span class="err">#</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="kn">package</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span><span class="w">      </span><span class="err">#</span><span class="w"> </span><span class="nx">Gradle</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">configuration</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span>
+<span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">commonMain</span><span class="o">/</span><span class="nx">kotlin</span><span class="o">/</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">bindings</span>
+<span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">commonTest</span><span class="o">/</span><span class="nx">kotlin</span><span class="o">/</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">tests</span>
+<span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">jniLibs</span><span class="o">/</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">Android</span><span class="w"> </span><span class="nx">native</span><span class="w"> </span><span class="nx">libraries</span>
+<span class="err">│</span><span class="w">       </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">jvmMain</span><span class="o">/</span><span class="nx">kotlin</span><span class="o">/</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="nx">JVM</span><span class="w"> </span><span class="nx">native</span><span class="w"> </span><span class="nx">libraries</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="nx">settings</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">apps</span><span class="o">/</span><span class="w">                         </span><span class="err">#</span><span class="w"> </span><span class="nx">Demo</span><span class="w"> </span><span class="nx">applications</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">apple</span><span class="o">/</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span><span class="w"> </span><span class="nx">SwiftUI</span><span class="w"> </span><span class="nx">app</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">DemoApp</span><span class="p">.</span><span class="nx">xcodeproj</span><span class="o">/</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Xcode</span><span class="w"> </span><span class="nx">project</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">TemplateDemo</span><span class="o">/</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Source</span><span class="w"> </span><span class="nx">files</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">README</span><span class="p">.</span><span class="nx">md</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">android</span><span class="o">/</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Android</span><span class="w"> </span><span class="nx">Compose</span><span class="w"> </span><span class="nx">app</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">app</span><span class="o">/</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="nx">App</span><span class="w"> </span><span class="nx">module</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="nx">main</span><span class="o">/</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Source</span><span class="w"> </span><span class="nx">files</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">build</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">│</span><span class="w">   </span><span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">settings</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">desktop</span><span class="o">/</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Desktop</span><span class="w"> </span><span class="nx">CLI</span><span class="w"> </span><span class="nx">JVM</span><span class="w"> </span><span class="nx">app</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">src</span><span class="o">/</span><span class="nx">main</span><span class="o">/</span><span class="nx">kotlin</span><span class="o">/</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">source</span>
+<span class="err">│</span><span class="w">       </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">│</span><span class="w">       </span><span class="err">└──</span><span class="w"> </span><span class="nx">settings</span><span class="p">.</span><span class="nx">gradle</span><span class="p">.</span><span class="nx">kts</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">scripts</span><span class="o">/</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="p">,</span><span class="w"> </span><span class="nx">test</span><span class="p">,</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">documentation</span><span class="w"> </span><span class="nx">scripts</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="nx">platforms</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">apple</span><span class="p">.</span><span class="nx">sh</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">build</span><span class="o">-</span><span class="nx">kotlin</span><span class="p">.</span><span class="nx">sh</span><span class="w">           </span><span class="err">#</span><span class="w"> </span><span class="nx">Build</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">all</span><span class="w"> </span><span class="nx">platforms</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">apple</span><span class="p">.</span><span class="nx">sh</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">iOS</span><span class="o">/</span><span class="nx">macOS</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">test</span><span class="o">-</span><span class="nx">kotlin</span><span class="p">.</span><span class="nx">sh</span><span class="w">            </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">script</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">Android</span><span class="o">/</span><span class="nx">JVM</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">doc</span><span class="o">-</span><span class="nx">all</span><span class="p">.</span><span class="nx">sh</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Generate</span><span class="w"> </span><span class="nx">documentation</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">setup</span><span class="p">.</span><span class="nx">sh</span><span class="w">                  </span><span class="err">#</span><span class="w"> </span><span class="nx">Install</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">targets</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">docs_src</span><span class="o">/</span><span class="w">                     </span><span class="err">#</span><span class="w"> </span><span class="nx">Documentation</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="p">(</span><span class="nx">markdown</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">UDL_GUIDE</span><span class="p">.</span><span class="nx">md</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">UniFFI</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">guide</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">SWIFT_EXAMPLES</span><span class="p">.</span><span class="nx">md</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">Swift</span><span class="w"> </span><span class="nx">usage</span><span class="w"> </span><span class="nx">examples</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">KOTLIN_EXAMPLES</span><span class="p">.</span><span class="nx">md</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Kotlin</span><span class="w"> </span><span class="nx">usage</span><span class="w"> </span><span class="nx">examples</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">TESTING</span><span class="p">.</span><span class="nx">md</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Testing</span><span class="w"> </span><span class="nx">guide</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">docs</span><span class="o">/</span><span class="w">                         </span><span class="err">#</span><span class="w"> </span><span class="nx">Generated</span><span class="w"> </span><span class="nx">documentation</span><span class="w"> </span><span class="p">(</span><span class="nx">HTML</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="nx">html</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">HTML</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">markdown</span><span class="w"> </span><span class="p">(</span><span class="kt">auto</span><span class="o">-</span><span class="nx">generated</span><span class="p">)</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">lib</span><span class="o">/</span><span class="w">                      </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="nx">docs</span><span class="w"> </span><span class="p">(</span><span class="nx">from</span><span class="w"> </span><span class="nx">cargo</span><span class="w"> </span><span class="nx">doc</span><span class="p">)</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">Cargo</span><span class="p">.</span><span class="nx">toml</span><span class="w">                    </span><span class="err">#</span><span class="w"> </span><span class="nx">Rust</span><span class="w"> </span><span class="kn">package</span><span class="w"> </span><span class="nx">manifest</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">DEVELOPMENT</span><span class="p">.</span><span class="nx">md</span><span class="w">                </span><span class="err">#</span><span class="w"> </span><span class="nx">Development</span><span class="w"> </span><span class="nx">guide</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">CONTRIBUTING</span><span class="p">.</span><span class="nx">md</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Contributing</span><span class="w"> </span><span class="nx">guidelines</span>
+<span class="err">└──</span><span class="w"> </span><span class="nx">README</span><span class="p">.</span><span class="nx">md</span><span class="w">                     </span><span class="err">#</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">file</span>
+</code></pre></div>
+
+<h2 id="testing">Testing</h2>
+<h3 id="test-all-platforms">Test All Platforms</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/test-all.sh
+</code></pre></div>
+
+<p>This will run tests for:
+- Rust core library (unit, integration, and doc tests)
+- Apple platforms (iOS + macOS Swift tests)
+- Kotlin platforms (Android + JVM tests)</p>
+<h3 id="test-specific-platforms">Test Specific Platforms</h3>
+<p><strong>Test Rust code:</strong></p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<p><strong>Test Apple platforms (iOS + macOS):</strong></p>
+<div class="codehilite"><pre><span></span><code>./scripts/test-apple.sh
+</code></pre></div>
+
+<p><strong>Test Kotlin platforms (Android + JVM):</strong></p>
+<div class="codehilite"><pre><span></span><code>./scripts/test-kotlin.sh
+</code></pre></div>
+
+<p><strong>Manual testing (if needed):</strong></p>
+<p>For Swift:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>platforms/apple
+swift<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<p>For Kotlin:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+./gradlew<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<h2 id="documentation">Documentation</h2>
+<p>The project documentation is organized into two directories:</p>
+<ul>
+<li><strong><code>docs_src/</code></strong> - Source markdown files (edit these)</li>
+<li><strong><code>docs/</code></strong> - Generated HTML documentation (auto-generated, published to GitHub Pages)</li>
+</ul>
+<h3 id="generate-documentation-for-all-platforms">Generate Documentation for All Platforms</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/doc-all.sh
+</code></pre></div>
+
+<p>This will generate API documentation for:
+- <strong>Rust</strong> → <code>docs/lib/index.html</code></p>
+<h3 id="view-documentation-locally">View Documentation Locally</h3>
+<p>After running <code>./scripts/doc-all.sh</code>, open the generated HTML files in your browser:</p>
+<div class="codehilite"><pre><span></span><code>open<span class="w"> </span>docs/lib/index.html
+</code></pre></div>
+
+<p>Or start a local web server:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>docs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<span class="c1"># Then open: http://localhost:8000/</span>
+</code></pre></div>
+
+<h3 id="adding-documentation">Adding Documentation</h3>
+<ol>
+<li>Add markdown files to <code>docs_src/</code> for platform-specific guides</li>
+<li>Root-level documentation (<code>README.md</code>, <code>DEVELOPMENT.md</code>, <code>CONTRIBUTING.md</code>) stays in project root</li>
+<li>CI/CD automatically converts markdown to HTML and publishes to GitHub Pages</li>
+</ol>
+<h3 id="publishing-documentation">Publishing Documentation</h3>
+<p>Documentation is automatically published to GitHub Pages when you push to <code>main</code>:</p>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>docs/<span class="w"> </span>docs_src/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update documentation&quot;</span>
+git<span class="w"> </span>push
+</code></pre></div>
+
+<p>The GitHub Actions workflow handles:
+- Converting markdown → HTML
+- Generating Rust API docs
+- Deploying to <code>gh-pages</code> branch</p>
+<h2 id="development">Development</h2>
+<p>For contributors and maintainers, see <a href="DEVELOPMENT.md">DEVELOPMENT.md</a> for detailed instructions on:</p>
+<ul>
+<li>Setting up your development environment</li>
+<li>Building and testing</li>
+<li>Adding new features</li>
+<li>Customizing the template</li>
+<li>Troubleshooting common issues</li>
+<li>Contributing guidelines</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>We welcome contributions! Please see <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines on:</p>
+<ul>
+<li>Reporting bugs</li>
+<li>Suggesting enhancements</li>
+<li>Submitting pull requests</li>
+<li>Development workflow</li>
+</ul>
+<h2 id="contact">Contact</h2>
+<p><strong>Ezequiel (Kimi) Aceto</strong></p>
+<ul>
+<li>📧 Email: <a href="mailto:eaceto@pm.me">eaceto@pm.me</a></li>
+<li>🌐 Website: <a href="https://eaceto.dev">eaceto.dev</a></li>
+<li>💼 LinkedIn: <a href="https://www.linkedin.com/in/ezequielaceto/">linkedin.com/in/ezequielaceto</a></li>
+<li>🐙 GitHub: <a href="https://github.com/eaceto">@eaceto</a></li>
+</ul>
+<p>For questions, issues, or discussions about this project:
+- 🐛 <a href="https://github.com/eaceto/rust-multiplatform-template-lib/issues">Report issues</a>
+- 💬 <a href="https://github.com/eaceto/rust-multiplatform-template-lib/discussions">Start a discussion</a></p>
+<h2 id="license">License</h2>
+<p>MIT License - see <a href="LICENSE">LICENSE</a> for details.</p>
+<p>Copyright (c) 2025 Ezequiel (Kimi) Aceto</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://mozilla.github.io/uniffi-rs/">UniFFI Documentation</a></li>
+<li><a href="https://doc.rust-lang.org/book/">Rust Book</a></li>
+<li><a href="https://swift.org/package-manager/">Swift Package Manager</a></li>
+<li><a href="https://kotlinlang.org/docs/multiplatform.html">Kotlin Multiplatform</a></li>
+</ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Guide - Rust Multiplatform Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 { color: #004e89; }
+        h1 { border-bottom: 3px solid #ff6b35; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #1a659e; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #1a659e;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        a { color: #1a659e; text-decoration: none; }
+        a:hover { color: #ff6b35; text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #004e89;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f9f9f9; }
+        blockquote {
+            border-left: 4px solid #ff6b35;
+            padding-left: 20px;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        .nav {
+            background: #004e89;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: white;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #ff6b35; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">🏠 Home</a>
+        <a href="README.html">📋 README</a>
+        <a href="DEVELOPMENT.html">🔧 Development</a>
+        <a href="UDL_GUIDE.html">🎯 UDL Guide</a>
+        <a href="SWIFT_EXAMPLES.html">🍎 Swift Examples</a>
+        <a href="KOTLIN_EXAMPLES.html">🤖 Kotlin Examples</a>
+        <a href="lib/index.html">📖 API Docs</a>
+    </div>
+    <div class="container">
+        <h1 id="testing-guide">Testing Guide</h1>
+<p>This guide explains how to run tests for the Rust Multiplatform Template Library across all supported platforms.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="run-all-tests">Run All Tests</h3>
+<div class="codehilite"><pre><span></span><code>./scripts/test-all.sh
+</code></pre></div>
+
+<p>This runs tests for:
+- ✅ Rust core library (unit + integration + doc tests)
+- ✅ Apple platforms (iOS + macOS Swift tests)
+- ✅ Kotlin platforms (JVM tests)</p>
+<h3 id="run-platform-specific-tests">Run Platform-Specific Tests</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Rust tests only</span>
+cargo<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Apple platforms (iOS + macOS)</span>
+./scripts/test-apple.sh
+
+<span class="c1"># Kotlin platforms (JVM)</span>
+./scripts/test-kotlin.sh
+</code></pre></div>
+
+<hr />
+<h2 id="rust-tests">Rust Tests</h2>
+<h3 id="running-tests">Running Tests</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># All tests (unit + integration + doc)</span>
+cargo<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Only unit tests</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--lib
+
+<span class="c1"># Only integration tests</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--test<span class="w"> </span><span class="s1">&#39;*&#39;</span>
+
+<span class="c1"># Only doc tests</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--doc
+
+<span class="c1"># Specific test</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>test_echo_with_value
+
+<span class="c1"># With output</span>
+cargo<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--<span class="w"> </span>--nocapture
+</code></pre></div>
+
+<h3 id="test-coverage">Test Coverage</h3>
+<p><strong>Unit Tests</strong> (<code>tests/template_tests.rs</code>):
+- <code>test_echo_with_value</code> - Basic echo functionality
+- <code>test_echo_with_empty</code> - Empty string handling
+- <code>test_echo_at_max_size</code> - Maximum size (1MB) handling
+- <code>test_echo_just_under_max_size</code> - Just under max size
+- <code>test_echo_input_too_large</code> - Error handling for oversized input
+- <code>test_echo_with_unicode</code> - Unicode character support
+- <code>test_echo_with_null_bytes</code> - Invalid character detection
+- <code>test_random_in_range</code> - Random number generation
+- <code>test_random_generates_different_values</code> - Randomness verification
+- <code>test_cancellation_token</code> - Cancellation support
+- <code>test_template_config</code> - Configuration objects
+- <code>smoke_uniffi_api</code> - UniFFI integration</p>
+<p><strong>Doc Tests</strong> (inline in source code):
+- <code>template::echo</code> - Documentation example
+- <code>template::random</code> - Documentation example</p>
+<hr />
+<h2 id="swiftapple-tests">Swift/Apple Tests</h2>
+<h3 id="running-tests_1">Running Tests</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># All Apple platform tests</span>
+./scripts/test-apple.sh
+
+<span class="c1"># Or manually</span>
+<span class="nb">cd</span><span class="w"> </span>platforms/apple
+swift<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<h3 id="test-coverage_1">Test Coverage</h3>
+<p><strong>Platform Tests</strong> (<code>Tests/TemplateTests/TemplateTests.swift</code>):
+- <code>testEchoWithValue</code> - Basic echo
+- <code>testEchoWithEmpty</code> - Empty string
+- <code>testEchoAtMaxSize</code> - Maximum size handling
+- <code>testRandom</code> - Random number generation
+- <code>testCancellation</code> - Async cancellation</p>
+<p><strong>Extension Tests</strong> (<code>Tests/TemplateTests/ExtensionsTests.swift</code>):
+- <code>testTemplateEcho</code> - Extension wrapper
+- <code>testTemplateRandom</code> - Extension wrapper
+- <code>testEchoResultDescription</code> - Result formatting
+- <code>testEchoResultTimestamp</code> - Timestamp parsing
+- <code>testErrorMapping</code> - Error conversion
+- <code>testSafeOperation</code> - Result type handling
+- <code>testConfigBuilder</code> - Configuration DSL
+- Plus 9 more extension tests</p>
+<p><strong>Total:</strong> 21 tests</p>
+<hr />
+<h2 id="kotlin-tests">Kotlin Tests</h2>
+<h3 id="overview">Overview</h3>
+<p>Kotlin tests run on the <strong>JVM target</strong> because:
+- ✅ JVM can load native libraries properly
+- ❌ Android unit tests require an emulator/device
+- ✅ JVM tests verify all Kotlin bindings work correctly</p>
+<h3 id="running-tests_2">Running Tests</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Via script (recommended)</span>
+./scripts/test-kotlin.sh
+
+<span class="c1"># Or directly with Gradle</span>
+<span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+./gradlew<span class="w"> </span>jvmTest
+
+<span class="c1"># View test report</span>
+open<span class="w"> </span>build/reports/tests/jvmTest/index.html
+</code></pre></div>
+
+<h3 id="test-coverage_2">Test Coverage</h3>
+<p><strong>JVM Tests</strong> (<code>src/commonTest/kotlin/TemplateTest.kt</code>):
+- <code>testEchoWithValue</code> - Basic echo functionality
+- <code>testEchoWithEmpty</code> - Empty string handling
+- <code>testEchoAtMaxSize</code> - Maximum size (1MB) handling
+- <code>testEchoWithLargeInput</code> - Error handling for oversized input
+- <code>testRandom</code> - Random number generation (100 iterations)</p>
+<p><strong>Total:</strong> 5 tests (all async/suspend)</p>
+<h3 id="android-testing">Android Testing</h3>
+<p>Android tests <strong>cannot run</strong> as standard unit tests because they require:
+- Physical device or emulator
+- Proper JNI library loading
+- Android runtime environment</p>
+<p>To test on Android:</p>
+<ol>
+<li><strong>Using Android Studio:</strong>
+   ```bash
+   # Build the library
+   ./scripts/build-kotlin.sh</li>
+</ol>
+<p># Open the demo app
+   cd apps/android
+   # Open in Android Studio, then run on device/emulator
+   ```</p>
+<ol>
+<li><strong>Using Demo App:</strong></li>
+<li>The <code>apps/android</code> demo app serves as an integration test</li>
+<li>Run it on a device/emulator to verify functionality</li>
+</ol>
+<hr />
+<h2 id="test-results">Test Results</h2>
+<h3 id="expected-output">Expected Output</h3>
+<p>When all tests pass, you should see:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">════════════════════════════════════════════════════════════</span>
+<span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="n">Summary</span>
+<span class="err">════════════════════════════════════════════════════════════</span>
+
+<span class="o">[</span><span class="n">SUCCESS</span><span class="o">]</span><span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="n">passed</span><span class="err">!</span>
+
+<span class="n">Test</span><span class="w"> </span><span class="nl">Coverage</span><span class="p">:</span>
+<span class="w">   </span><span class="o">[</span><span class="n">SUCCESS</span><span class="o">]</span><span class="w"> </span><span class="n">Rust</span><span class="w"> </span><span class="n">core</span><span class="w"> </span><span class="n">library</span><span class="w"> </span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">integration</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="n">tests</span><span class="p">)</span>
+<span class="w">   </span><span class="o">[</span><span class="n">SUCCESS</span><span class="o">]</span><span class="w"> </span><span class="n">Apple</span><span class="w"> </span><span class="n">platforms</span><span class="w"> </span><span class="p">(</span><span class="n">iOS</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">macOS</span><span class="w"> </span><span class="n">Swift</span><span class="w"> </span><span class="n">tests</span><span class="p">)</span>
+<span class="w">   </span><span class="o">[</span><span class="n">SUCCESS</span><span class="o">]</span><span class="w"> </span><span class="n">Kotlin</span><span class="w"> </span><span class="n">platforms</span><span class="w"> </span><span class="p">(</span><span class="n">Android</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">JVM</span><span class="w"> </span><span class="n">tests</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="test-reports">Test Reports</h3>
+<p>After running tests, detailed HTML reports are available:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Rust tests</span>
+<span class="nf">target</span><span class="err">/</span><span class="no">doc</span><span class="err">/</span><span class="no">index.html</span>
+
+<span class="c1"># Swift tests</span>
+<span class="na">.build</span><span class="err">/</span><span class="no">x86_64-apple-macosx</span><span class="err">/</span><span class="no">debug</span><span class="err">/</span><span class="p">*.</span><span class="no">xctest</span>
+
+<span class="c1"># Kotlin JVM tests</span>
+<span class="nf">platforms</span><span class="err">/</span><span class="no">kotlin</span><span class="err">/</span><span class="no">build</span><span class="err">/</span><span class="no">reports</span><span class="err">/</span><span class="no">tests</span><span class="err">/</span><span class="no">jvmTest</span><span class="err">/</span><span class="no">index.html</span>
+</code></pre></div>
+
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="rust-tests_1">Rust Tests</h3>
+<p><strong>Problem:</strong> Tests fail to compile</p>
+<div class="codehilite"><pre><span></span><code><span class="n">error</span><span class="o">[</span><span class="n">E0433</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nl">resolve</span><span class="p">:</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">undeclared</span><span class="w"> </span><span class="n">crate</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">module</span>
+</code></pre></div>
+
+<p><strong>Solution:</strong> Rebuild the library</p>
+<div class="codehilite"><pre><span></span><code>cargo<span class="w"> </span>clean
+cargo<span class="w"> </span>build
+cargo<span class="w"> </span><span class="nb">test</span>
+</code></pre></div>
+
+<hr />
+<h3 id="swift-tests">Swift Tests</h3>
+<p><strong>Problem:</strong> Module not found</p>
+<div class="codehilite"><pre><span></span><code><span class="n">error</span><span class="o">:</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">such</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="s1">&#39;Template&#39;</span>
+</code></pre></div>
+
+<p><strong>Solution:</strong> Build first, then test</p>
+<div class="codehilite"><pre><span></span><code>./scripts/build-apple.sh
+./scripts/test-apple.sh
+</code></pre></div>
+
+<hr />
+<h3 id="kotlin-tests_1">Kotlin Tests</h3>
+<p><strong>Problem:</strong> Native library not found (Android unit tests)</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">java</span><span class="p">.</span><span class="nx">lang</span><span class="p">.</span><span class="nx">UnsatisfiedLinkError</span><span class="p">:</span><span class="w"> </span><span class="nx">Native</span><span class="w"> </span><span class="kn">library</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="nx">found</span>
+</code></pre></div>
+
+<p><strong>Solution:</strong> Use JVM tests instead</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+./gradlew<span class="w"> </span>jvmTest<span class="w">  </span><span class="c1"># Works with native libraries</span>
+</code></pre></div>
+
+<p><strong>Problem:</strong> Gradle wrapper not found</p>
+<div class="codehilite"><pre><span></span><code>./gradlew: command not found
+</code></pre></div>
+
+<p><strong>Solution:</strong> Gradle wrapper is now included</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>platforms/kotlin
+chmod<span class="w"> </span>+x<span class="w"> </span>gradlew
+./gradlew<span class="w"> </span>jvmTest
+</code></pre></div>
+
+<hr />
+<h2 id="continuous-integration">Continuous Integration</h2>
+<h3 id="github-actions-example">GitHub Actions Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Tests</span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">macos-latest</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Rust</span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions-rs/toolchain@v1</span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">toolchain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./scripts/setup.sh</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./scripts/build-all.sh</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./scripts/test-all.sh</span>
+</code></pre></div>
+
+<hr />
+<h2 id="test-coverage-goals">Test Coverage Goals</h2>
+<p>Current coverage:
+- ✅ <strong>Rust:</strong> 14 unit tests + 2 doc tests
+- ✅ <strong>Swift:</strong> 21 tests (5 platform + 16 extension)
+- ✅ <strong>Kotlin:</strong> 5 JVM tests</p>
+<p>All critical paths are tested:
+- ✅ Basic functionality (echo, random)
+- ✅ Error handling (too large, invalid input)
+- ✅ Edge cases (empty strings, max size, Unicode)
+- ✅ Async/cancellation support
+- ✅ Configuration and extension APIs</p>
+<hr />
+<h2 id="writing-new-tests">Writing New Tests</h2>
+<h3 id="rust">Rust</h3>
+<div class="codehilite"><pre><span></span><code><span class="cp">#[tokio::test]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">test_my_feature</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">echo</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="nb">None</span><span class="p">).</span><span class="k">await</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">is_ok</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="swift">Swift</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">func</span> <span class="nf">testMyFeature</span><span class="p">()</span> <span class="k">async</span> <span class="kr">throws</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nv">result</span> <span class="p">=</span> <span class="k">try</span> <span class="k">await</span> <span class="n">echo</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+    <span class="n">XCTAssertNotNil</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="kotlin">Kotlin</h3>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">testMyFeature</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">templateEcho</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span>
+<span class="w">    </span><span class="n">assertTrue</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<hr />
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../DEVELOPMENT.md">DEVELOPMENT.md</a> - Development guide</li>
+<li><a href="../README.md">README.md</a> - Project overview</li>
+<li><a href="SWIFT_EXAMPLES.md">SWIFT_EXAMPLES.md</a> - Swift usage examples</li>
+<li><a href="KOTLIN_EXAMPLES.md">KOTLIN_EXAMPLES.md</a> - Kotlin usage examples</li>
+</ul>
+    </div>
+</body>
+</html>

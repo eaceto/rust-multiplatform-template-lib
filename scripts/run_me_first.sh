@@ -345,12 +345,12 @@ fi
 # Swift Package
 print_info "Updating Swift package..."
 replace_in_file "platforms/apple/Package.swift" "name: \"Template\"" "name: \"$SWIFT_MODULE_NAME\""
-replace_in_file "platforms/apple/Package.swift" "name: \"Template\"" "name: \"$SWIFT_MODULE_NAME\""
 replace_in_file "platforms/apple/Package.swift" "\"Template\"" "\"$SWIFT_MODULE_NAME\""
 replace_in_file "platforms/apple/Package.swift" "name: \"TemplateFFI\"" "name: \"${SWIFT_MODULE_NAME}FFI\""
 replace_in_file "platforms/apple/Package.swift" "\"TemplateFFI\"" "\"${SWIFT_MODULE_NAME}FFI\""
 replace_in_file "platforms/apple/Package.swift" "librust_multiplatform_template_lib.xcframework" "lib${RUST_LIB_NAME}.xcframework"
 replace_in_file "platforms/apple/Package.swift" "name: \"TemplateTests\"" "name: \"${SWIFT_MODULE_NAME}Tests\""
+replace_in_file "platforms/apple/Package.swift" "Sources/Template" "Sources/${SWIFT_MODULE_NAME}"
 replace_in_file "platforms/apple/Package.swift" "Tests/TemplateTests" "Tests/${SWIFT_MODULE_NAME}Tests"
 
 # Rename Swift directories
@@ -411,11 +411,17 @@ find . -name "*.md" -type f ! -path "*/target/*" ! -path "*/.git/*" -exec sed -i
 find . -name "*.md" -type f ! -path "*/target/*" ! -path "*/.git/*" -exec sed -i.bak "s/rust_multiplatform_template_lib/$RUST_LIB_NAME/g" {} \;
 find . -name "*.md.bak" -type f -delete
 
-# Update build scripts with hardcoded library names (exclude this script)
+# Update build scripts with hardcoded library names and paths (exclude this script)
 print_info "Updating build scripts..."
-find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/librust_multiplatform_template_lib/lib${RUST_LIB_NAME}/g" {} \;
-find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/rust_multiplatform_template_lib/${RUST_LIB_NAME}/g" {} \;
-find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak "s/src\/template\.udl/src\/${NEW_UDL_NAME}.udl/g" {} \;
+# Note: Only replace "librust_multiplatform_template_lib" (with lib prefix) to avoid double-replacement bugs
+# The build scripts only reference the library with the "lib" prefix
+find scripts -name "*.sh" -type f ! -name "run_me_first.sh" -exec sed -i.bak \
+    -e "s/librust_multiplatform_template_lib/lib${RUST_LIB_NAME}/g" \
+    -e "s/src\/template\.udl/src\/${NEW_UDL_NAME}.udl/g" \
+    -e "s/Sources\/Template/Sources\/${SWIFT_MODULE_NAME}/g" \
+    -e "s/TemplateFFI/${SWIFT_MODULE_NAME}FFI/g" \
+    -e "s/module Template/module ${SWIFT_MODULE_NAME}/g" \
+    {} \;
 find scripts -name "*.sh.bak" -type f -delete
 print_success "Updated build scripts"
 

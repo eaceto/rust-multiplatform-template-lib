@@ -8,9 +8,10 @@ echo ""
 cd "$(dirname "$0")/.."
 
 # First, ensure the library is built
-if [ ! -d "platforms/apple/xcframework/librust_multiplatform_template_lib.xcframework" ]; then
+# Check for any xcframework (name may vary after customization)
+if ! ls platforms/apple/xcframework/*.xcframework >/dev/null 2>&1; then
     echo "[WARNING]  XCFramework not found. Building first..."
-    ./build-apple.sh
+    ./scripts/build-apple.sh
     echo ""
 fi
 
